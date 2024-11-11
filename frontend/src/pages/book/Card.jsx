@@ -2,8 +2,14 @@ import React from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { getImgUrl } from "../../utils/getImageUrl";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../redux/cart/cartSlice";
 
 function Card({ book }) {
+  const dispatch=useDispatch();
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product))
+  }
   return (
     <div className="rounded-lg transition-shadow duration-300 shadow-md hover:shadow-lg p-4 max-w-xs md:max-w-sm mx-auto">
       <div className="flex flex-col md:flex-row md:items-start md:h-72 md:justify-center gap-4">
@@ -46,6 +52,7 @@ function Card({ book }) {
 
           {/* Add to Cart Button */}
           <button
+          onClick={()=>handleAddToCart(book)}
             className="flex items-center justify-center gap-1 bg-blue-500 text-white rounded-md py-1 px-3 text-sm hover:bg-blue-600 transition-colors"
             aria-label="Add to Cart"
           >

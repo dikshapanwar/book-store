@@ -6,6 +6,7 @@ import { CiUser } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 import avatarImage from "../assets/avatar.png";
+import { useSelector } from "react-redux";
 
 const navigation = [
   {
@@ -29,6 +30,7 @@ const navigation = [
 function Navbar() {
   const currentUser = false;
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const cartItem = useSelector((state) => state.cart.cartItem);
   //console.log(isDropDownOpen);
 
   return (
@@ -74,11 +76,11 @@ function Navbar() {
                   <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-40">
                     <ul className="space-y-2">
                       {navigation.map((item) => (
-                      //  console.log(item),
+                        //  console.log(item),
                         <li
-                         key={item.name}
-                         onClick={()=>(setIsDropDownOpen(false))}>
-                          
+                          key={item.name}
+                          onClick={() => setIsDropDownOpen(false)}
+                        >
                           <Link
                             to={item.href}
                             className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
@@ -105,10 +107,14 @@ function Navbar() {
 
           <Link
             to="/cart"
-            className="bg-primary p-1 sm:px-6 px-2 flex items-center rounded-sm"
+            className=" p-1 sm:px-2 px-2 flex items-center rounded-full"
           >
             <FaShoppingCart />
-            <span className="text-sm font-semibold sm:ml-1">0</span>
+            {cartItem.length > 0 && (
+              <span className=" bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
+                {cartItem.length}
+              </span>
+            )}
           </Link>
         </div>
       </nav>
