@@ -32,7 +32,7 @@ function Navbar() {
   //console.log(isDropDownOpen);
 
   return (
-    <header className="max-w-screen-2xl mx-auto px-4 py-6">
+    <header className="max-w-screen-2xl mx-auto px-12 py-6">
       <nav className="flex justify-between items-center">
         {/* LEFT SIDE */}
         <div className="flex items-center md:gap-16 gap-4">
