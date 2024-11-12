@@ -1,25 +1,27 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-// Import your clearCart action
-import { clearItem, removeItem } from '../../redux/cart/cartSlice'
+import { clearItem, removeItem } from '../../redux/cart/cartSlice';
 import { getImgUrl } from '../../utils/getImageUrl';
 
-function Cart({product}) {
+function Cart() {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.cartItem);
-   const totalPrice = cartItems.reduce((total, item) => total + item.newPrice * item.quantity, 0);
+  const totalPrice = cartItems.reduce((total, item) => total + item.newPrice * item.quantity, 0);
+
   // Function to handle clearing the cart
   const handleClearCart = () => {
     dispatch(clearItem());
   };
- const handleRemoveItem = (product) => {
-    dispatch(removeItem(product));
- }
+
+  // Function to handle removing an item
+  const handleRemoveItem = (id) => {
+    dispatch(removeItem(id)); // Pass only the item's ID
+  };
+
   return (
     <div className="flex mt-12 h-full flex-col overflow-hidden bg-white shadow-xl">
       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-        {/* Header */}
         <div className="flex items-start justify-between">
           <div className="text-lg font-medium text-gray-900">Shopping cart</div>
           {cartItems.length > 0 && (
@@ -38,12 +40,12 @@ function Cart({product}) {
             {cartItems.length > 0 ? (
               <ul role="list" className="-my-6 divide-y divide-gray-200">
                 {cartItems.map(item => (
-                  <li key={item.id} className="flex py-6">
+                  <li key={item._id} className="flex py-6">
                     {/* Product Image */}
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                       <img
                         alt={item?.title}
-                        src={`${getImgUrl(item?.coverImage)}`}
+                        src={getImgUrl(item?.coverImage)}
                         className="h-full w-full object-cover object-center"
                       />
                     </div>
@@ -53,7 +55,7 @@ function Cart({product}) {
                       <div>
                         <div className="flex flex-wrap justify-between text-base font-medium text-gray-900">
                           <h3>
-                            <Link to={`/product/${item.id}`}>{item.title}</Link>
+                            <Link to={`/product/${item._id}`}>{item.title}</Link>
                           </h3>
                           <p className="sm:ml-4">${item.newPrice}</p>
                         </div>
@@ -66,7 +68,7 @@ function Cart({product}) {
                           <strong>Qty:</strong> {item.quantity}
                         </p>
                         <button
-                          onClick={()=>handleRemoveItem(product)}
+                          onClick={() => handleRemoveItem(item._id)}
                           type="button"
                           className="font-medium text-indigo-600 hover:text-indigo-500"
                         >
@@ -88,9 +90,7 @@ function Cart({product}) {
       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
         <div className="flex justify-between text-base font-medium text-gray-900">
           <p>Subtotal</p>
-          <p>
-           ${totalPrice ?totalPrice:0}
-          </p>
+          <p>${totalPrice.toFixed(2)}</p>
         </div>
         <p className="mt-0.5 text-sm text-gray-500">
           Shipping and taxes calculated at checkout.
