@@ -15,7 +15,7 @@ router.get("/", getAllBooks);
 //GET A BOOK
 router.get("/:id", getSingleBook);
 //UPDATE A BOOK
-router.put("/:id", updateABook);
+router.put("/edit/:id", updateABook);
 //DELETE A BOOK
 router.delete("/:id", deleteABook);
 export default router;

@@ -20,17 +20,13 @@ const postABook = async (req, res) => {
 const getAllBooks = async (req, res) => {
   try {
     const Books = await Book.find().sort({ createdAt: -1 });
-    res.status(200).send({
-      message: "Books Fetched Successfully",
-      data: Books,
-    });
+    res.status(200).json(Books); // Directly send the array
   } catch (error) {
     console.log(error);
-    res.status(500).send({
-      message: "Error Getting Books",
-    });
+    res.status(500).json({ message: "Error Getting Books" });
   }
 };
+
 //get single book
 const getSingleBook = async (req, res) => {
   try {
@@ -56,7 +52,9 @@ const getSingleBook = async (req, res) => {
 const updateABook = async (req, res) => {
   try {
     const { id } = req.params;
-    const book = await Book.findByIdAndUpdate(id, req.body);
+    const book = await Book.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
     if (!book) {
       return res.status(404).send({
         message: "Book Not Found",
