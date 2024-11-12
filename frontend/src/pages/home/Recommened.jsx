@@ -5,15 +5,11 @@ import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css/navigation";
 import Card from '../book/Card';
+import { useFetchAllBooksQuery } from "../../redux/books/bookApi";
 
 function Recommened() {
-  const [books, setBooks] = useState([]);
-
-  useEffect(() => {
-    fetch("book.json")
-      .then((res) => res.json())
-      .then((data) => setBooks(data));
-  }, []);
+   // Fetching books data using Redux Toolkit Query
+   const { data: books = [] } = useFetchAllBooksQuery();
 
   return (
     <div className="py-16">

@@ -4,14 +4,12 @@ import getBaseUrl from "../../utils/baseUrl";
 // Define the base query with proper configuration
 const baseQuery = fetchBaseQuery({
   baseUrl: `${getBaseUrl()}/api/books`,
-  credentials: "include", // Fix: corrected to lowercase
+  credentials: "include",
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("token");
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }
-   
-    console.log("Token:", localStorage.getItem("token"));
     return headers;
   },
 });
@@ -22,12 +20,59 @@ const booksApi = createApi({
   baseQuery,
   tagTypes: ["Books"],
   endpoints: (builder) => ({
+    // Fetch all books
     fetchAllBooks: builder.query({
       query: () => "/",
       providesTags: ["Books"],
     }),
+
+    // Fetch book by ID
+    fetchBookByID: builder.query({
+      query: (id) => `/${id}`,
+      providesTags: (result, error, id) => [{ type: "Books", id }],
+    }),
+
+    // Add a new book
+    addBook: builder.mutation({
+      query: (newBook) => ({
+        url: `/create-book`,
+        method: "POST",
+        body: newBook,
+      }),
+      invalidatesTags: ["Books"],
+    }),
+
+    // Update a book by ID
+    updateBook: builder.mutation({
+      query: ({ id, updatedBook }) => ({
+        url: `/edit/${id}`,
+        method: "PUT",
+        body: updatedBook, // Fix: corrected from `rest` to `updatedBook`
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: "Books", id }],
+    }),
+
+    // Delete a book by ID
+    deleteBook: builder.mutation({
+      query: (id) => ({
+        url: `/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, id) => [{ type: "Books", id }],
+    }),
   }),
 });
 
-export const { useFetchAllBooksQuery } = booksApi;
+// Exporting the hooks for the defined endpoints
+export const {
+  useFetchAllBooksQuery,
+  useFetchBookByIDQuery,
+  useAddBookMutation,
+  useUpdateBookMutation,
+  useDeleteBookMutation,
+} = booksApi;
+
 export default booksApi;

@@ -12,7 +12,7 @@ function Top() {
 
   // Fetching books data using Redux Toolkit Query
   const { data: books = [], isLoading, error } = useFetchAllBooksQuery();
-console.log(books);
+ // console.log(books);
   // Handling loading and error states
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;

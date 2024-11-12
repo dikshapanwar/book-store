@@ -24,12 +24,10 @@ const bookSchema = new mongoose.Schema(
     },
     newPrice: {
       type: Number,
-      // If you want it optional, you can omit required, or add a default value like:
-      // default: 0, 
+      default: 0, 
     },
     coverImage: {
       type: String,
-      // If optional, no `required` needed here
     },
     // author: {
     //   type: String,
