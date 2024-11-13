@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function CheckOut() {
   const [isChecked, setIsChecked] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
   
-  // Sample current user data (replace this with your actual user object)
-  const currentUser = {
-    email: "user@example.com"
-  };
+ const {currentUser}=useAuth()
   
   const cartItems = useSelector(state => state.cart.cartItem);
   const totalPrice = cartItems.reduce((total, item) => total + item.newPrice * item.quantity, 0);
