@@ -4,7 +4,7 @@ import connectDB from "./db/db.js";
 import dotenv from "dotenv";
 import cors from "cors";
 import bookRoutes from "./src/book/book.route.js";
-
+import  orderRoutes from "./src/order/order.route.js";
 dotenv.config();
 
 // INITIALIZE EXPRESS
@@ -23,7 +23,7 @@ app.use(cors({
 
 // ROUTES
 app.use("/api/books", bookRoutes);
-
+app.use("/api/orders", orderRoutes);
 // DATABASE CONNECTION
 connectDB();
 
