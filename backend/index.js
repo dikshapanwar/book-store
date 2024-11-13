@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bookRoutes from "./src/book/book.route.js";
 import  orderRoutes from "./src/order/order.route.js";
+import userRoutes from "./src/users/user.route.js";
 dotenv.config();
 
 // INITIALIZE EXPRESS
@@ -24,6 +25,7 @@ app.use(cors({
 // ROUTES
 app.use("/api/books", bookRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/auth", userRoutes);
 // DATABASE CONNECTION
 connectDB();
 
