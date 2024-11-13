@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-
-
+import { getAuth } from "firebase/auth";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [message, setMessage] = useState("");
+  const { loginUser,googleSignIn } = useAuth();
+
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -14,11 +17,28 @@ const Login = () => {
     watch,
   } = useForm();
 
-  const onSubmit=(data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+    try {
+      await loginUser(data.email, data.password);
+      setMessage("User Logged In Successfully");
+      alert("User Logged In Successfully");
+      navigate("/");
+    } catch (error) {
+      setMessage("Please enter a valid email and password");
+      console.log(error);
+    }
   };
-  const handleGoogleSignIn = () => {
-    console.log("google sign in");
+  const handleGoogleSignIn = async () => {
+    console.log("Google Sign-In started");
+    try {
+      await googleSignIn();
+      alert("Signed in with Google successfully");
+      navigate("/"); // Redirect to the home page after successful sign-in
+    } catch (error) {
+      alert(`Error with Google sign-in: ${error.message}`);
+      console.error(error);
+    }
   };
   return (
     <div className="h-[calc(100vh-120px)] flex justify-center items-center ">

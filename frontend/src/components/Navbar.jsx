@@ -7,6 +7,7 @@ import { FaHeart } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 import avatarImage from "../assets/avatar.png";
 import { useSelector } from "react-redux";
+import { useAuth } from "../context/AuthContext";
 
 const navigation = [
   {
@@ -28,11 +29,14 @@ const navigation = [
 ];
 
 function Navbar() {
-  const currentUser = false;
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const cartItem = useSelector((state) => state.cart.cartItem);
+  const { currentUser, logout } = useAuth();
   //console.log(isDropDownOpen);
-
+  const handleLogOut = () => {
+    console.log("logout");
+    logout();
+  };
   return (
     <header className="max-w-screen-2xl mx-auto px-12 py-6">
       <nav className="flex justify-between items-center">
@@ -90,6 +94,15 @@ function Navbar() {
                           </Link>
                         </li>
                       ))}
+                      <li>
+                        <button
+                          onClick={() => handleLogOut()}
+                          className="block px-4 py-2 text-gray-700
+                         hover:bg-gray-100 rounded-md"
+                        >
+                          Logout
+                        </button>
+                      </li>
                     </ul>
                   </div>
                 )}
