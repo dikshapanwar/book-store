@@ -1,13 +1,12 @@
 import jwt from "jsonwebtoken";
 import User from "./user.model.js";
-import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
-console.log("Loaded JWT_SECRET:", JWT_SECRET);
+//console.log("Loaded JWT_SECRET:", JWT_SECRET);
 
 const admin = async (req, res) => {
   const { username, password } = req.body;
