@@ -32,10 +32,11 @@ function Navbar() {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const cartItem = useSelector((state) => state.cart.cartItem);
   const { currentUser, logout } = useAuth();
-  //console.log(isDropDownOpen);
+  console.log(isDropDownOpen);
   const handleLogOut = () => {
     console.log("logout");
     logout();
+    setIsDropDownOpen(false)
   };
   return (
     <header className="max-w-screen-2xl mx-auto px-12 py-6">
