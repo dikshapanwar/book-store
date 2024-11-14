@@ -1,57 +1,61 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"; // Import useDispatch
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCreateOrderMutation } from "../../redux/orders/orderApi";
 import Swal from "sweetalert2";
+import Loading from "../../components/Loading";
+import { clearItem } from "../../redux/cart/cartSlice"; // Import clearItem action
 
 function CheckOut() {
   const [isChecked, setIsChecked] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const navigate=useNavigate()
- const {currentUser}=useAuth()
-  const [createOrder,{isLoading,error}]=useCreateOrderMutation()
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const [createOrder, { isLoading, error }] = useCreateOrderMutation();
   const cartItems = useSelector(state => state.cart.cartItem);
   const totalPrice = cartItems.reduce((total, item) => total + item.newPrice * item.quantity, 0);
-  
-  const onSubmit =async(data) => {
+  const dispatch = useDispatch(); // Initialize dispatch
+
+  const onSubmit = async (data) => {
+    const newOrder = {
+      name: data.name,
+      email: currentUser?.email,
+      address: {
+        city: data.city,
+        country: data.country,
+        state: data.state,
+        zipcode: data.zipcode,
+      },
+      phone: data.phone,
+      productIds: cartItems.map(item => item?._id),
+      totalPrice: totalPrice,
+    };
     
-      const newOrder = {
-        name: data.name,
-        email: currentUser?.email,
-        address: {
-          city: data.city,
-          country: data.country,
-          state: data.state,
-          zipcode: data.zipcode
-        },
-        phone: data.phone,
-        productIds: cartItems.map(item => item?._id),
-        totalPrice: totalPrice,
-      }
-      //console.log(newOrder)
-      try {
-        await createOrder(newOrder).unwrap();
-        Swal.fire({
-          title: "Confirmed Order?",
-          text: "Your Order has been created successfully!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes,it's Confirmed!",
-        })
-       navigate("/orders")
-      } catch (error) {
-        console.log("Error In Order Creation",error)
-        alert("Error In Order Creation")
-      }
-    
+    try {
+      await createOrder(newOrder).unwrap();
+      dispatch(clearItem());
+      Swal.fire({
+        title: "Confirmed Order?",
+        text: "Your Order has been created successfully!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, it's Confirmed!",
+      });
+      navigate("/orders");
+    } catch (error) {
+      console.log("Error In Order Creation", error);
+      alert("Error In Order Creation");
+    }
   };
-  if(isLoading){
-    return <div>Loading...</div>
+
+  if (isLoading) {
+    return <Loading />;
   }
+
   return (
     <section>
       <div className="min-h-screen p-6 bg-gray-100 flex items-center justify-center">
