@@ -6,7 +6,7 @@ import cors from "cors";
 import bookRoutes from "./src/book/book.route.js";
 import  orderRoutes from "./src/order/order.route.js";
 import userRoutes from "./src/users/user.route.js";
-
+import newsRoutes from "./src/news/news.route.js";
 import AdminRoute from './src/stats/admin.stats.js';
 dotenv.config();
 
@@ -29,6 +29,7 @@ app.use("/api/books", bookRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api/admin", AdminRoute);
+app.use("/api/news", newsRoutes);
 // DATABASE CONNECTION
 connectDB();
 
