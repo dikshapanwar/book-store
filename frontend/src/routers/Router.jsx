@@ -16,6 +16,7 @@ import ManageBooks from "../pages/dashboard/manageBooks/ManageBooks";
 import AddBooks from "../pages/dashboard/addbooks/AddBooks";
 import UpdateBook from "../pages/dashboard/editBooks/UpdateBook";
 import Wishlist from "../pages/book/Wishlist";
+import SearchResults from "../components/Search";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />
+      },
+      {
+        path: "/search",
+        element: <SearchResults />
       },
       {
         path: "/orders",
@@ -52,7 +57,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/wishlist",
-        element:<Wishlist/>
+        element: <Wishlist />
       },
       {
         path: "/checkout",
@@ -82,19 +87,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <AdminRoute><Dashboard/></AdminRoute>
+        element: <AdminRoute><Dashboard /></AdminRoute>
       },
       {
         path: "add-book",
-        element:<AdminRoute><AddBooks/></AdminRoute>
+        element: <AdminRoute><AddBooks /></AdminRoute>
       },
       {
         path: "edit-book/:id",
-        element: <AdminRoute><UpdateBook/></AdminRoute>
+        element: <AdminRoute><UpdateBook /></AdminRoute>
       },
       {
         path: "manage-books",
-        element: <AdminRoute><ManageBooks/></AdminRoute>
+        element: <AdminRoute><ManageBooks /></AdminRoute>
       },
       {
         path: "manage-users",

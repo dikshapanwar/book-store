@@ -1,24 +1,36 @@
-import React from 'react'
-import { FiShoppingCart, FiHeart } from 'react-icons/fi'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { getImgUrl } from '../../utils/getImageUrl'
-import { addItem } from '../../redux/cart/cartSlice'
-import { addFavorite } from '../../redux/books/Favroute'
+import React from 'react';
+import { FiShoppingCart } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getImgUrl } from '../../utils/getImageUrl';
+import { addItem } from '../../redux/cart/cartSlice';
+import { FiHeart } from "react-icons/fi";
+import { FaHeart } from "react-icons/fa";
+import { addFavorite, removeFavorite } from '../../redux/books/Favroute';
+
 
 const Card = ({ book }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const handleAddToCart = (product) => {
-        dispatch(addItem(product))
-    }
 
-    const handleAddToFavorites = (book) => {
-        // Logic to add to favorites goes here
-        dispatch(addFavorite(book));
-        navigate('/wishlist');
-        console.log('Added to favorites:', book);
-    }
+    const favorites = useSelector((state) => state.fav.favorites);
+    const isFavorite = favorites.some((favBook) => favBook._id === book._id);
+
+    // Handle adding/removing a book from favorites
+    const handleToggleFavorite = () => {
+        if (isFavorite) {
+            dispatch(removeFavorite(book._id)); // Remove from favorites
+        } else {
+            dispatch(addFavorite(book));
+            navigate('/wishlist') // Add to favorites
+        }
+    };
+
+    // Handle adding a book to the cart
+    const handleAddToCart = (product) => {
+        dispatch(addItem(product));
+        navigate('/cart');
+    };
 
     return (
         <div className="rounded-lg transition-shadow duration-300 mt-10 w-44">
@@ -47,28 +59,35 @@ const Card = ({ book }) => {
                     </p>
 
                     {/* Buttons container */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
                         {/* Heart button */}
                         <button
-                            onClick={() => handleAddToFavorites(book)}
-                            className="text-red-500 hover:text-red-600 p-2 rounded-full border border-red-500 hover:border-red-600 transition-all duration-200"
+                            onClick={handleToggleFavorite}
+                            className={`p-2 rounded-full border transition-all duration-200 ${
+                                isFavorite
+                                    ? "text-red-600 border-red-600"
+                                    : "text-red-500 border-red-500 hover:text-red-600 hover:border-red-600"
+                            }`}
                         >
-                            <FiHeart className="w-6 h-6" />
+                            {isFavorite ? (
+                                <FaHeart className="w-6 h-6" />
+                            ) : (
+                                <FiHeart className="w-6 h-6" />
+                            )}
                         </button>
 
                         {/* Add to Cart button */}
                         <button
                             onClick={() => handleAddToCart(book)}
-                            className="btn-primary text-sm py-1 px-2 flex items-center gap-1 mb-2 border rounded-md transition-all duration-200"
+                            className="btn-primary text-sm py-1 px-2 flex items-center gap-1 border rounded-md transition-all duration-200"
                         >
                             <FiShoppingCart className="w-5 h-5" />
-                           
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Card;

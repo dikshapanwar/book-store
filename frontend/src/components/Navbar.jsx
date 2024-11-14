@@ -1,84 +1,83 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HiMiniBars3BottomLeft } from "react-icons/hi2";
-import { CiSearch } from "react-icons/ci";
-import { CiUser } from "react-icons/ci";
+import { CiSearch, CiUser } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa6";
-import { FaShoppingCart } from "react-icons/fa";
 import avatarImage from "../assets/avatar.png";
 import { useSelector } from "react-redux";
 import { useAuth } from "../context/AuthContext";
+import { FaShoppingCart } from "react-icons/fa";
 
 const navigation = [
-  {
-    name: "DashBorad",
-    href: "/dashboard",
-  },
-  {
-    name: "orders",
-    href: "/orders",
-  },
-  {
-    name: "cart",
-    href: "/cart",
-  },
-  {
-    name: "Checkout",
-    href: "/checkout",
-  },
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Orders", href: "/orders" },
+  { name: "Cart", href: "/cart" },
+  { name: "Checkout", href: "/checkout" },
 ];
 
 function Navbar() {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const cartItem = useSelector((state) => state.cart.cartItem);
   const { currentUser, logout } = useAuth();
-  console.log(isDropDownOpen);
+  const navigate = useNavigate();
+
   const handleLogOut = () => {
-    console.log("logout");
     logout();
-    setIsDropDownOpen(false)
+    setIsDropDownOpen(false);
   };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      navigate(`/search?query=${searchQuery}`);
+    }
+  };
+
   return (
-    <header className="max-w-screen-2xl mx-auto px-12 py-6">
+    <header className="max-w-screen-2xl mx-auto px-6 py-6">
       <nav className="flex justify-between items-center">
         {/* LEFT SIDE */}
         <div className="flex items-center md:gap-16 gap-4">
           <Link to="/">
             <HiMiniBars3BottomLeft className="w-8 h-8" />
           </Link>
+
           {/* Search Input */}
-          <div className="relative md:w-72 w-40 sm:w-32">
+          <form onSubmit={handleSearch} className="relative md:w-72 w-40 sm:w-32">
             <CiSearch className="absolute left-1 inset-y-2 w-5 h-5" />
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search here"
               className="bg-[#EAEAEA] w-full py-1 md:px-8 px-6 rounded-md focus:outline-none"
             />
-          </div>
+          </form>
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="relative flex items-center gap-4">
-          <div className="relative">
-            {currentUser ? (
-              <>
-                {/* Avatar Button */}
-                <button
-                  onClick={() => setIsDropDownOpen(!isDropDownOpen)}
-                  className="focus:outline-none"
-                >
-                  <img
-                    src={avatarImage}
-                    alt="User Avatar"
-                    className={`size-5 rounded-xl ${
-                      currentUser ? "ring-2 ring-blue-900" : ""
-                    }`}
-                  />
-                </button>
+        <div className="relative flex items-center gap-6">
+          {currentUser ? (
+            <>
+              {/* Avatar Button */}
+              <button
+                onClick={() => setIsDropDownOpen(!isDropDownOpen)}
+                className="focus:outline-none"
+              >
+                <img
+                  src={avatarImage}
+                  alt="User Avatar"
+                  className={`w-5 h-5 rounded-full ${
+                    currentUser ? "ring-2 ring-blue-900" : ""
+                  }`}
+                />
+              </button>
 
-                {/* Dropdown Menu */}
-                {isDropDownOpen && (
-                  <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-40">
+              {/* Dropdown Menu */}
+         
+             {isDropDownOpen && (
+                  <div className="absolute right-0 mt-80 bg-white shadow-lg rounded-md p-2 w-40 z-40 ">
                     <ul className="space-y-2">
                       {navigation.map((item) => (
                         //  console.log(item),
@@ -113,18 +112,17 @@ function Navbar() {
                 <CiUser className="w-6 h-6" />
               </Link>
             )}
-          </div>
+      
 
-         <Link to="/wishlist">
-         <button className="hidden sm:block">
-            <FaHeart />
-          </button>
-         </Link>
+          {/* Wishlist Link */}
+          <Link to="/wishlist">
+            <button className="hidden sm:block">
+              <FaHeart className="w-5 h-5 text-red-500 hover:text-red-700" />
+            </button>
+          </Link>
 
-          <Link
-            to="/cart"
-            className=" p-1 sm:px-2 px-2 flex items-center rounded-full"
-          >
+          {/* Cart Link */}
+          <Link to="/cart" className="p-1 sm:px-2 flex items-center rounded-full relative">
             <FaShoppingCart />
             {cartItem.length > 0 ? (
               <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
@@ -132,8 +130,8 @@ function Navbar() {
               </span>
             ) : (
               <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
-                0
-              </span>
+             0
+            </span>
             )}
           </Link>
         </div>
