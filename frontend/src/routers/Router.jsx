@@ -15,6 +15,7 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import ManageBooks from "../pages/dashboard/manageBooks/ManageBooks";
 import AddBooks from "../pages/dashboard/addbooks/AddBooks";
 import UpdateBook from "../pages/dashboard/editBooks/UpdateBook";
+import Wishlist from "../pages/book/Wishlist";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "/cart",
         element: <Cart />
+      },
+      {
+        path: "/wishlist",
+        element:<Wishlist/>
       },
       {
         path: "/checkout",

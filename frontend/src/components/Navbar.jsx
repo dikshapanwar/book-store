@@ -115,9 +115,11 @@ function Navbar() {
             )}
           </div>
 
-          <button className="hidden sm:block">
+         <Link to="/wishlist">
+         <button className="hidden sm:block">
             <FaHeart />
           </button>
+         </Link>
 
           <Link
             to="/cart"
