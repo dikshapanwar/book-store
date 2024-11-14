@@ -14,6 +14,7 @@ import DashboardLayout from "../pages/dashboard/DashboardLayout";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ManageBooks from "../pages/dashboard/manageBooks/ManageBooks";
 import AddBooks from "../pages/dashboard/addbooks/AddBooks";
+import UpdateBook from "../pages/dashboard/editBooks/UpdateBook";
 
 const router = createBrowserRouter([
   {
@@ -84,7 +85,7 @@ const router = createBrowserRouter([
       },
       {
         path: "edit-book/:id",
-        element: <div>Edit Book</div>
+        element: <AdminRoute><UpdateBook/></AdminRoute>
       },
       {
         path: "manage-books",

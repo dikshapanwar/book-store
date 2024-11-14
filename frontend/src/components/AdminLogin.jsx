@@ -34,7 +34,7 @@ function AdminLogin() {
          alert("Token is Expired");
         }, 86400000);
         alert("Login Successful");
-        navigate("/admin/dashboard");
+        navigate("/dashboard");
       }
       else{
         alert("Invalid credentials");
