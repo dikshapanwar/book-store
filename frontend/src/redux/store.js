@@ -4,6 +4,7 @@ import booksApi from './books/bookApi';
 import ordersApi from './orders/orderApi';
 import favoritesReducer from './books/Favroute'
 import bookReducer from './books/bookS;lice';
+import newsApi from './news/newsApi';
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
@@ -11,10 +12,11 @@ export const store = configureStore({
     books:bookReducer,
     [booksApi.reducerPath]: booksApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer, 
+    [newsApi.reducerPath]: newsApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(booksApi.middleware,ordersApi.middleware), 
+    getDefaultMiddleware().concat(booksApi.middleware,ordersApi.middleware,newsApi.middleware), 
 });
 
 export default store;
