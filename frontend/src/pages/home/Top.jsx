@@ -9,15 +9,10 @@ import { useFetchAllBooksQuery } from "../../redux/books/bookApi";
 
 function Top() {
   const [selectedCategory, setSelectedCategory] = useState("Choose a genre");
-
-  // Fetching books data using Redux Toolkit Query
   const { data: books = [], isLoading, error } = useFetchAllBooksQuery();
- // console.log(books);
-  // Handling loading and error states
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
-
-  // Category filter options
   const categories = [
     "Choose a genre",
     "Action",
@@ -30,8 +25,6 @@ function Top() {
     "Thriller",
     "Western",
   ];
-
-  // Filtering books based on selected category
   const filterBooks =
     selectedCategory === "Choose a genre"
       ? books
@@ -39,10 +32,9 @@ function Top() {
           (book) =>
             book.category?.toLowerCase() === selectedCategory.toLowerCase()
         );
-
   return (
     <div className="py-10">
-      <h2 className="text-3xl font-semibold mb-6">Top Sellers</h2>
+      <h2 className="text-2xl font-semibold mb-6">Top Sellers</h2>
 
       {/* Category Selector */}
       <div className="mb-7 flex items-center">
@@ -83,7 +75,9 @@ function Top() {
         {filterBooks.length > 0 ? (
           filterBooks.map((book, index) => (
             <SwiperSlide key={index}>
-              <Card book={book} />
+              <div className="relative">
+                <Card book={book} />
+              </div>
             </SwiperSlide>
           ))
         ) : (
