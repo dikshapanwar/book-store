@@ -22,7 +22,7 @@ const newsApi = createApi({
   endpoints: (builder) => ({
     // Fetch all books
     fetchAllNews: builder.query({
-      query: () => "/get-news",
+      query: () => "/",
       providesTags: ["News"],
     }),
 

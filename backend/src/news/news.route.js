@@ -4,8 +4,8 @@ import verifyToken from "../middleware/verifyToken.js";
 const router = Router();
 
 router.post('/create-news',createNews);
-router.get('/get-news',getAllNews);
-router.get('/get-one/:id',getSingleNews);
+router.get('/',getAllNews);
+router.get('/:id',getSingleNews);
 router.put("/edit/:id",verifyToken, updateANews);
 
 router.delete("/delete/:id",verifyToken, deleteANews);
