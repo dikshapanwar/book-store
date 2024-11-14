@@ -15,7 +15,6 @@ const SingleBook = () => {
     dispatch(addItem(product));
   };
 
-
   if (isLoading) return <div>Loading...</div>;
 
   // Render error state
@@ -26,35 +25,40 @@ const SingleBook = () => {
   const bookData = book.data;
 
   return (
-    <div className="max-w-lg shadow-md p-5">
+    <div className="max-w-lg shadow-md p-5 items-center">
       <h1 className="text-2xl font-bold mb-6">{bookData.title}</h1>
-      <div>
-        <div>
+      <div className="flex">
+        {/* Image section */}
+        <div className="w-1/2 pr-6">
           <img
             src={getImgUrl(bookData.coverImage)}
             alt={bookData.title}
-            className="mb-8"
+            className="mb-8 w-full h-auto"
           />
         </div>
-        <div className="mb-5">
-          <p className="text-gray-700 mb-2">
-            <strong>Author:</strong> {bookData.author || "admin"}
-          </p>
-          <p className="text-gray-700 mb-4 capitalize">
-            <strong>Category:</strong> {bookData.category}
-          </p>
-          <p className="text-gray-700">
-            <strong>Description:</strong> {bookData.description}
-          </p>
-        </div>
 
-        <button
-          onClick={() => handleAddToCart(bookData)}
-          className="btn-primary px-6 space-x-1 flex items-center gap-1"
-        >
-          <FiShoppingCart />
-          <span>Add to Cart</span>
-        </button>
+        {/* Book details section */}
+        <div className="w-1/2">
+          <div className="mb-5">
+            <p className="text-gray-700 mb-2">
+              <strong>Author:</strong> {bookData.author || "admin"}
+            </p>
+            <p className="text-gray-700 mb-4 capitalize">
+              <strong>Category:</strong> {bookData.category}
+            </p>
+            <p className="text-gray-700">
+              <strong>Description:</strong> {bookData.description}
+            </p>
+          </div>
+
+          <button
+            onClick={() => handleAddToCart(bookData)}
+            className="btn-primary px-6 space-x-1 flex items-center gap-1"
+          >
+            <FiShoppingCart />
+            <span>Add to Cart</span>
+          </button>
+        </div>
       </div>
     </div>
   );

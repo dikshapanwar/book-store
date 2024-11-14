@@ -14,24 +14,24 @@ const UpdateBook = () => {
 
   // Fetch book data using RTK Query
   const { data: bookData, isLoading, isError, refetch } = useFetchBookByIDQuery(id);
-  
+
   // Initialize react-hook-form
   const { register, handleSubmit, reset } = useForm();
 
   // Populate form fields when book data is fetched
   useEffect(() => {
-    if (bookData) {
-      console.log('Fetched book data:', bookData); // Debugging line
-  
+    if (bookData?.data) {
+      console.log('Fetched book data:', bookData.data); // Debugging line
+
       // Populate form fields with fetched data
       reset({
-        title: bookData?.title || '',
-        description: bookData?.description || '',
-        category: bookData?.category || '',
-        trending: bookData?.trending || false,
-        oldPrice: bookData?.oldPrice || '',
-        newPrice: bookData?.newPrice || '',
-        coverImage: bookData?.coverImage || '',
+        title: bookData?.data?.title || '',
+        description: bookData?.data?.description || '',
+        category: bookData?.data?.category || '',
+        trending: bookData?.data?.trending || false,
+        oldPrice: bookData?.data?.oldPrice || '',
+        newPrice: bookData?.data?.newPrice || '',
+        coverImage: bookData?.data?.coverImage || '',
       });
     }
   }, [bookData, reset]);
@@ -82,7 +82,6 @@ const UpdateBook = () => {
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Update Book</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-    
         <InputField label="Title" name="title" placeholder="Enter book title" register={register} />
         <InputField label="Description" name="description" type="textarea" placeholder="Enter book description" register={register} />
         
@@ -106,7 +105,7 @@ const UpdateBook = () => {
               type="checkbox" 
               {...register('trending')} 
               className="rounded text-blue-600 focus:ring focus:ring-offset-2 focus:ring-blue-500"
-              defaultChecked={bookData?.trending} // Ensure checkbox is properly checked
+              defaultChecked={bookData?.data?.trending} // Ensure checkbox is properly checked
             />
             <span className="ml-2 text-sm font-semibold text-gray-700">Trending</span>
           </label>
