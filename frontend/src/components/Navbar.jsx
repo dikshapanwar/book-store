@@ -124,9 +124,13 @@ function Navbar() {
             className=" p-1 sm:px-2 px-2 flex items-center rounded-full"
           >
             <FaShoppingCart />
-            {cartItem.length > 0 && (
-              <span className=" bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
+            {cartItem.length > 0 ? (
+              <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
                 {cartItem.length}
+              </span>
+            ) : (
+              <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
+                0
               </span>
             )}
           </Link>
@@ -135,5 +139,4 @@ function Navbar() {
     </header>
   );
 }
-
 export default Navbar;

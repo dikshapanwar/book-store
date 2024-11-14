@@ -16,7 +16,8 @@ function Cart() {
 
   // Function to handle removing an item
   const handleRemoveItem = (id) => {
-    dispatch(removeItem(id)); // Pass only the item's ID
+    dispatch(removeItem(id)); 
+    
   };
 
   return (
