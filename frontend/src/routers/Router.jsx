@@ -17,6 +17,7 @@ import AddBooks from "../pages/dashboard/addbooks/AddBooks";
 import UpdateBook from "../pages/dashboard/editBooks/UpdateBook";
 import Wishlist from "../pages/book/Wishlist";
 import SearchResults from "../components/Search";
+import AddNews from "../pages/dashboard/addnews/AddNews";
 
 const router = createBrowserRouter([
   {
@@ -104,7 +105,11 @@ const router = createBrowserRouter([
       {
         path: "manage-users",
         element: <div>Manage Users</div>
-      }
+      },
+      {
+        path: "add-news",
+        element: <AdminRoute><AddNews /></AdminRoute>
+      },
     ]
   }
 ]);

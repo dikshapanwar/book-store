@@ -7,10 +7,12 @@ import { MdIncompleteCircle } from 'react-icons/md'
 
 import getBaseUrl from '../../utils/baseUrl';
 import RevenueChart from './RevenueChart';
+import { useAuth } from '../../context/AuthContext'
 
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState({});
+    
     // console.log(data)
     const navigate = useNavigate()
     useEffect(() => {
