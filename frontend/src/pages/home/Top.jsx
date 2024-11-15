@@ -55,11 +55,11 @@ function Top() {
 
       {/* Swiper Component for displaying books */}
       <Swiper
-        slidesPerView={1}
+        slidesPerView={1} 
         spaceBetween={30}
         navigation={true}
         autoplay={{
-          delay: 2500,
+          delay:1000,
           disableOnInteraction: false,
         }}
         breakpoints={{

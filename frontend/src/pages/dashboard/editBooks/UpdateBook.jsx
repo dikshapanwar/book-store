@@ -13,29 +13,33 @@ const UpdateBook = () => {
   const { id } = useParams();
   const [imageFileName, setImageFileName] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState("");
 
-  const {
-    data: bookData,
-    isLoading,
-    isError,
-    refetch,
-  } = useFetchBookByIDQuery(id);
+  const { data: bookData, isLoading, isError, refetch } = useFetchBookByIDQuery(id);
 
-  // Initialize react-hook-form
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue, watch } = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      category: "",
+      trending: false,
+      oldPrice: "",
+      newPrice: "",
+    },
+  });
 
   // Populate form fields when book data is fetched
   useEffect(() => {
     if (bookData?.data) {
       reset({
-        title: bookData?.data?.title || "",
-        description: bookData?.data?.description || "",
-        category: bookData?.data?.category || "",
-        trending: bookData?.data?.trending || false,
-        oldPrice: bookData?.data?.oldPrice || "",
-        newPrice: bookData?.data?.newPrice || "",
-        coverImage: bookData?.data?.coverImage || "", // Add default coverImage for visual feedback
+        title: bookData.data.title,
+        description: bookData.data.description,
+        category: bookData.data.category,
+        trending: bookData.data.trending,
+        oldPrice: bookData.data.oldPrice,
+        newPrice: bookData.data.newPrice,
       });
+      setSelectedImageUrl(bookData.data.coverImage);
     }
   }, [bookData, reset]);
 
@@ -45,48 +49,38 @@ const UpdateBook = () => {
     if (file) {
       setImageFile(file);
       setImageFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => setSelectedImageUrl(reader.result);
+      reader.readAsDataURL(file);
     }
   };
 
   // Form submission handler
-  const onSubmit = async (data) => {
-    console.log(data);
+  const onSubmit = async (bookData) => {
     const updateBookData = new FormData();
-    updateBookData.append("title", data.title);
-    updateBookData.append("description", data.description);
-    updateBookData.append("category", data.category);
-    updateBookData.append("trending", data.trending);
-    updateBookData.append("oldPrice", Number(data.oldPrice));
-    updateBookData.append("newPrice", Number(data.newPrice));
+    updateBookData.append("title", bookData.title);
+    updateBookData.append("description", bookData.description);
+    updateBookData.append("category", bookData.category);
+    updateBookData.append("trending", bookData.trending);
+    updateBookData.append("oldPrice", Number(bookData.oldPrice));
+    updateBookData.append("newPrice", Number(bookData.newPrice));
 
     if (imageFile) {
-      updateBookData.append("coverImage", imageFile); // Append file if selected
+      updateBookData.append("coverImage", imageFile);
     }
 
     try {
       await axios.put(`${getBaseUrl()}/api/books/edit/${id}`, updateBookData, {
         headers: {
-          "Content-Type": "multipart/form-data", // Important to set the correct content type for file upload
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      Swal.fire({
-        title: "Book Updated",
-        text: "Your book has been updated successfully!",
-        icon: "success",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "Okay",
-      });
+      Swal.fire("Book Updated", "Your book has been updated successfully!", "success");
       refetch();
     } catch (error) {
       console.error("Failed to update book:", error);
-      Swal.fire({
-        title: "Update Failed",
-        text: "Could not update the book. Please try again.",
-        icon: "error",
-        confirmButtonColor: "#d33",
-        confirmButtonText: "Close",
-      });
+      Swal.fire("Update Failed", "Could not update the book. Please try again.", "error");
     }
   };
 
@@ -123,17 +117,16 @@ const UpdateBook = () => {
           ]}
           register={register}
         />
+
+        {/* Checkbox for Trending */}
         <div className="mb-4">
           <label className="inline-flex items-center">
             <input
               type="checkbox"
               {...register("trending")}
               className="rounded text-blue-600 focus:ring focus:ring-offset-2 focus:ring-blue-500"
-              defaultChecked={bookData?.data?.trending} // Ensure checkbox is properly checked
             />
-            <span className="ml-2 text-sm font-semibold text-gray-700">
-              Trending
-            </span>
+            <span className="ml-2 text-sm font-semibold text-gray-700">Trending</span>
           </label>
         </div>
 
@@ -154,24 +147,20 @@ const UpdateBook = () => {
 
         {/* Cover Image Upload */}
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Cover Image
-          </label>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image</label>
           <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
             className="mb-2 w-full"
           />
-          {imageFileName && (
-            <p className="text-sm text-gray-500">Selected: {imageFileName}</p>
+          {selectedImageUrl && (
+            <img src={selectedImageUrl} alt="Cover Preview" className="w-32 h-32 object-cover mt-2" />
           )}
+          {imageFileName && <p className="text-sm text-gray-500">Selected: {imageFileName}</p>}
         </div>
 
-        <button
-          type="submit"
-          className="w-full py-2 bg-blue-500 text-white font-bold rounded-md mt-4"
-        >
+        <button type="submit" className="w-full py-2 bg-blue-500 text-white font-bold rounded-md mt-4">
           Update Book
         </button>
       </form>
