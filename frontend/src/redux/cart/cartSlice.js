@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const initialState = {
-  cartItem: [],
+  cartItem: JSON.parse(localStorage.getItem("cart")) || [], // Initialize from local storage if available
 };
 
 export const cartSlice = createSlice({
@@ -27,15 +27,22 @@ export const cartSlice = createSlice({
           confirmButtonText: "OK!",
         });
       }
+      // Save to local storage
+      localStorage.setItem("cart", JSON.stringify(state.cartItem));
     },
     removeItem: (state, action) => {
       state.cartItem = state.cartItem.filter(item => item._id !== action.payload);
+      localStorage.setItem("cart", JSON.stringify(state.cartItem)); // Save updated cart
     },
-    clearItem: state => {
+    clearItem: (state) => {
       state.cartItem = [];
+      localStorage.setItem("cart", JSON.stringify(state.cartItem)); // Clear cart in local storage
+    },
+    initializeCart: (state, action) => {
+      state.cartItem = action.payload;
     },
   },
 });
 
-export const { addItem, removeItem, clearItem } = cartSlice.actions;
+export const { addItem, removeItem, clearItem, initializeCart } = cartSlice.actions;
 export default cartSlice.reducer;

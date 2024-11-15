@@ -8,6 +8,7 @@ import  orderRoutes from "./src/order/order.route.js";
 import userRoutes from "./src/users/user.route.js";
 import newsRoutes from "./src/news/news.route.js";
 import AdminRoute from './src/stats/admin.stats.js';
+import wishlistRoutes from "./src/wishlist/wishlist.route.js";
 dotenv.config();
 
 // INITIALIZE EXPRESS
@@ -29,6 +30,7 @@ app.use("/api/books", bookRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api/admin", AdminRoute);
+app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/news", newsRoutes);
 // DATABASE CONNECTION
 connectDB();

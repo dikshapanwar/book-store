@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { clearItem, removeItem } from '../../redux/cart/cartSlice';
+import { clearItem, initializeCart, removeItem } from '../../redux/cart/cartSlice';
 import { getImgUrl } from '../../utils/getImageUrl';
 
 function Cart() {
   const dispatch = useDispatch();
-  const cartItems = useSelector(state => state.cart.cartItem);
+  const cartItems = useSelector((state) => state.cart.cartItem);
   const totalPrice = cartItems.reduce((total, item) => total + item.newPrice * item.quantity, 0);
+
+  // Initialize cart items from local storage
+  useEffect(() => {
+    try {
+      const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+      dispatch(initializeCart(storedCart));
+    } catch (error) {
+      console.error('Error parsing cart data from local storage:', error);
+    }
+  }, [dispatch]);
+
+  // Persist cart items to local storage whenever they change
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   // Function to handle clearing the cart
   const handleClearCart = () => {
@@ -16,12 +31,12 @@ function Cart() {
 
   // Function to handle removing an item
   const handleRemoveItem = (id) => {
-    dispatch(removeItem(id)); 
-    
+    dispatch(removeItem(id));
   };
 
   return (
     <div className="flex mt-12 h-full flex-col overflow-hidden bg-white shadow-xl">
+      {/* Cart Header */}
       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
         <div className="flex items-start justify-between">
           <div className="text-lg font-medium text-gray-900">Shopping cart</div>
@@ -40,7 +55,7 @@ function Cart() {
           <div className="flow-root">
             {cartItems.length > 0 ? (
               <ul role="list" className="-my-6 divide-y divide-gray-200">
-                {cartItems.map(item => (
+                {cartItems.map((item) => (
                   <li key={item._id} className="flex py-6">
                     {/* Product Image */}
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -58,7 +73,7 @@ function Cart() {
                           <h3>
                             <Link to={`/product/${item._id}`}>{item.title}</Link>
                           </h3>
-                          <p className="sm:ml-4">${item.newPrice}</p>
+                          <p className="sm:ml-4">${item.newPrice.toFixed(2)}</p>
                         </div>
                         <p className="mt-1 text-sm text-gray-500 capitalize">
                           <strong>Category:</strong> {item.category}
@@ -93,9 +108,7 @@ function Cart() {
           <p>Subtotal</p>
           <p>${totalPrice.toFixed(2)}</p>
         </div>
-        <p className="mt-0.5 text-sm text-gray-500">
-          Shipping and taxes calculated at checkout.
-        </p>
+        <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
         {cartItems.length > 0 && (
           <div className="mt-6">
             <Link

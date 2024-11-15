@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFavorite } from '../../redux/books/Favroute';
+import { removeFavorite, initializeFavorites } from '../../redux/books/Favroute';
 import { getImgUrl } from '../../utils/getImageUrl';
-import { useNavigate } from 'react-router-dom';
-
-
 
 function Wishlist() {
   const favorites = useSelector((state) => state.fav.favorites);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
+  // Load favorites from local storage on initial render
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    dispatch(initializeFavorites(storedFavorites));
+  }, [dispatch]);
+
   const handleRemoveFavorite = (bookId) => {
-    dispatch(removeFavorite(bookId)); 
-  }
+    dispatch(removeFavorite(bookId)); // This will also update local storage
+  };
 
   return (
     <div className="wishlist-container">
@@ -26,7 +29,7 @@ function Wishlist() {
           {favorites.map((book) => (
             <div key={book._id} className="card rounded-lg shadow-md p-4">
               <img
-                src={`${getImgUrl(book?.coverImage)}`} // Assuming the coverImage URL is available
+                src={getImgUrl(book?.coverImage)}
                 alt={book.title}
                 className="w-full h-45 object-cover rounded-md"
               />
