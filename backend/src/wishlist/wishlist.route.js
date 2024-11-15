@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { findById } from '../models/user'; // Assuming User model includes wishlist
-import Wishlist, { findOne } from '../models/wishlist'; // Separate Wishlist model for MongoDB
+import { findById } from '../models/user';  
+import Wishlist from '../wishlist/wishlist.model'; // Mongoose model for the Wishlist
 const router = Router();
 
 router.post('/wishlist', async (req, res) => {
@@ -14,7 +14,7 @@ router.post('/wishlist', async (req, res) => {
     }
 
     // Check if the product is already in the wishlist
-    const existingItem = await findOne({ user_id, product_id });
+    const existingItem = await Wishlist.findOne({ user_id, product_id });
     if (existingItem) {
       return res.status(400).send('Product already in the wishlist');
     }
@@ -26,9 +26,11 @@ router.post('/wishlist', async (req, res) => {
       added_at: new Date(),
     });
 
+    // Save the new wishlist item to the database
     await newItem.save();
     res.status(201).send('Product added to wishlist');
   } catch (err) {
+    console.error(err); // For better debugging
     res.status(500).send('Server error');
   }
 });

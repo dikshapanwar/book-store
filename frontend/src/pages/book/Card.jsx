@@ -38,8 +38,8 @@ const Card = ({ book }) => {
                 <div className="sm:h-72 sm:flex-shrink-0 border rounded-md">
                     <Link to={`/books/${book._id}`}>
                         <img
-                            src={`${getImgUrl(book?.coverImage)}`}
-                            alt=""
+                            src={getImgUrl(book?.coverImage)}  // Uses the updated getImgUrl function
+                            alt={book?.title}
                             className="w-full bg-cover p-2 rounded-md cursor-pointer hover:scale-105 transition-all duration-200"
                         />
                     </Link>
@@ -89,5 +89,6 @@ const Card = ({ book }) => {
         </div>
     );
 };
+
 
 export default Card;
