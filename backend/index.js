@@ -32,6 +32,7 @@ app.use("/api/auth", userRoutes);
 app.use("/api/admin", AdminRoute);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/news", newsRoutes);
+app.use("/api/user", userRoutes );
 // DATABASE CONNECTION
 connectDB();
 
