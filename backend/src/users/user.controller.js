@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "./user.model.js";
 import dotenv from "dotenv";
-import bcrypt from "bcryptjs";  // Import bcrypt
+import bcrypt from "bcryptjs"; // Import bcrypt
 // Load environment variables
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -72,24 +72,23 @@ const userRegister = async (req, res) => {
     await newUser.save();
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    console.error('Error registering user:', error);  // More detailed logging for server-side issues
+    console.error("Error registering user:", error); // More detailed logging for server-side issues
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-
-const  userLogin = async (req, res) => {
+const userLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-  //  Compare the plain text password with the hashed password in the database
-   const isMatch = await bcrypt.compare(password, user.password);
-   if (!isMatch) {
-     return res.status(400).json({ message: "Incorrect password" });
-   }
+    //  Compare the plain text password with the hashed password in the database
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       JWT_SECRET,
@@ -109,4 +108,4 @@ const  userLogin = async (req, res) => {
   }
 };
 
-export { admin,userRegister,userLogin };
+export { admin, userRegister, userLogin };

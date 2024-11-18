@@ -6,13 +6,35 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { useFetchAllBooksQuery } from "../../redux/books/bookApi";
+import { useSelector, useDispatch } from "react-redux";
+import { addFavorite, removeFavorite } from "../../redux/books/Favroute";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 function Top() {
   const [selectedCategory, setSelectedCategory] = useState("Choose a genre");
   const { data: books = [], isLoading, error } = useFetchAllBooksQuery();
 
+  // Redux state for favorites
+  const favorites = useSelector((state) => state.fav.favorites);
+  const dispatch = useDispatch();
+
+  // Function to check if a book is already in the wishlist
+  const isBookInWishlist = (bookId) => {
+    return favorites.some((book) => book._id === bookId);
+  };
+
+  // Function to handle adding/removing from wishlist
+  const handleWishlistToggle = (book) => {
+    if (isBookInWishlist(book._id)) {
+      dispatch(removeFavorite(book._id));
+    } else {
+      dispatch(addFavorite(book));
+    }
+  };
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+
   const categories = [
     "Choose a genre",
     "Action",
@@ -25,6 +47,7 @@ function Top() {
     "Thriller",
     "Western",
   ];
+
   const filterBooks =
     selectedCategory === "Choose a genre"
       ? books
@@ -32,6 +55,7 @@ function Top() {
           (book) =>
             book.category?.toLowerCase() === selectedCategory.toLowerCase()
         );
+
   return (
     <div className="py-10">
       <h2 className="text-2xl font-semibold mb-6">Top Sellers</h2>
@@ -55,11 +79,11 @@ function Top() {
 
       {/* Swiper Component for displaying books */}
       <Swiper
-        slidesPerView={1} 
+        slidesPerView={1}
         spaceBetween={30}
         navigation={true}
         autoplay={{
-          delay:1000,
+          delay: 1000,
           disableOnInteraction: false,
         }}
         breakpoints={{
@@ -76,7 +100,20 @@ function Top() {
           filterBooks.map((book, index) => (
             <SwiperSlide key={index}>
               <div className="relative">
+                {/* Book Card */}
                 <Card book={book} />
+
+                {/* Heart icon for wishlist */}
+                <button
+                  onClick={() => handleWishlistToggle(book)}
+                  className="absolute top-4 right-4 text-red-500 text-xl"
+                >
+                  {isBookInWishlist(book._id) ? (
+                    <FaHeart />
+                  ) : (
+                    <FaRegHeart />
+                  )}
+                </button>
               </div>
             </SwiperSlide>
           ))

@@ -64,12 +64,19 @@ export const AuthProvider = ({ children }) => {
 
     if (token) {
       try {
-        // Decode token and set current user
-        const decodedToken = jwt_decode(token);
-        setCurrentUser(decodedToken);
+        // Decode token and check expiry
+        const decodedToken = jwtDecode(token);
+        const isExpired = decodedToken.exp * 1000000 < Date.now();
+
+        if (isExpired) {
+          setError("Token expired");
+          logout();
+        } else {
+          setCurrentUser(decodedToken);
+        }
       } catch (err) {
-        setError("Invalid or expired token");
-        logout(); // Invalidate session if token is not valid
+        setError("Invalid token");
+        logout(); // Logout if the token is invalid
       }
     }
 

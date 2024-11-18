@@ -1,18 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFavorite, initializeFavorites } from '../../redux/books/Favroute';
 import { getImgUrl } from '../../utils/getImageUrl';
+import axios from 'axios';
+import getBaseUrl from '../../utils/baseUrl';
 
 function Wishlist() {
   const favorites = useSelector((state) => state.fav.favorites);
   const dispatch = useDispatch();
+  const [error, setError] = useState(null);
 
-  // Load favorites from local storage on initial render
-  useEffect(() => {
-    const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    dispatch(initializeFavorites(storedFavorites));
-  }, [dispatch]);
+ 
+  const handleAddToWishlist = async (userId, productId) => {
+    try {
+      const response = await axios.post(`${getBaseUrl()}api/wishlist/wishlist`, { user_id: userId, product_id: productId });
+      console.log('Product added to wishlist:', response.data);
+      // Optionally, you can update the local state or notify the user
+    } catch (err) {
+      setError(err.response ? err.response.data : 'Server error');
+      console.error('Error adding product to wishlist:', err);
+    }
+  };
 
+  // Remove favorite from local storage and Redux store
   const handleRemoveFavorite = (bookId) => {
     dispatch(removeFavorite(bookId)); // This will also update local storage
   };
@@ -20,6 +30,9 @@ function Wishlist() {
   return (
     <div className="wishlist-container">
       <h2 className="text-2xl font-semibold mb-4">Your Wishlist</h2>
+
+      {/* Display error message if there is any */}
+      {error && <p className="text-red-500">{error}</p>}
 
       {/* Check if there are no favorites */}
       {favorites.length === 0 ? (
@@ -37,7 +50,15 @@ function Wishlist() {
               <p className="text-gray-600">{book.description.slice(0, 100)}...</p>
               <p className="font-medium mt-2">${book.newPrice}</p>
 
-              {/* Remove button */}
+              {/* Add to wishlist button */}
+              <button
+                onClick={() => handleAddToWishlist('user-id-placeholder', book._id)} // Replace with actual user ID
+                className="text-blue-500 hover:text-blue-600 mt-2"
+              >
+                Add to Wishlist
+              </button>
+
+              {/* Remove from wishlist button */}
               <button
                 onClick={() => handleRemoveFavorite(book._id)}
                 className="text-red-500 hover:text-red-600 mt-2"
