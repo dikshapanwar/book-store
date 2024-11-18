@@ -36,7 +36,7 @@ const orderSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "Book",
         required: true,
-      },
+      }
     ],
     totalPrice: {
       type: Number,
