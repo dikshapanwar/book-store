@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../../components/Loading";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -14,10 +14,9 @@ const UpdateBook = () => {
   const [imageFileName, setImageFileName] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
-
+ const navigate = useNavigate();
   const { data: bookData, isLoading, isError, refetch } = useFetchBookByIDQuery(id);
-
-  const { register, handleSubmit, reset, setValue, watch } = useForm({
+  const { register, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
       title: "",
       description: "",
@@ -56,30 +55,47 @@ const UpdateBook = () => {
   };
 
   // Form submission handler
-  const onSubmit = async (bookData) => {
-    const updateBookData = new FormData();
-    updateBookData.append("title", bookData.title);
-    updateBookData.append("description", bookData.description);
-    updateBookData.append("category", bookData.category);
-    updateBookData.append("trending", bookData.trending);
-    updateBookData.append("oldPrice", Number(bookData.oldPrice));
-    updateBookData.append("newPrice", Number(bookData.newPrice));
-
-    if (imageFile) {
-      updateBookData.append("coverImage", imageFile);
-    }
-
+  const onSubmit = async (formData) => {
     try {
+      const updateBookData = {
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        trending: formData.trending,
+        oldPrice: Number(formData.oldPrice),
+        newPrice: Number(formData.newPrice),
+      };
+
+      // If there's a new image file, handle the file upload
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        // Upload the image to the server
+        const { data } = await axios.post(`${getBaseUrl()}/api/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        updateBookData.coverImage = data.fileUrl; // Assuming your API returns the uploaded file URL
+      } else {
+        updateBookData.coverImage = bookData.data.coverImage;
+      }
+
+      // Update the book data
       await axios.put(`${getBaseUrl()}/api/books/edit/${id}`, updateBookData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+
       Swal.fire("Book Updated", "Your book has been updated successfully!", "success");
       refetch();
+      navigate("/dashboard/manage-books");
     } catch (error) {
-      console.error("Failed to update book:", error);
+      console.error("Failed to update book:", error?.response?.data || error.message);
       Swal.fire("Update Failed", "Could not update the book. Please try again.", "error");
     }
   };
@@ -147,7 +163,9 @@ const UpdateBook = () => {
 
         {/* Cover Image Upload */}
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Cover Image
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -155,12 +173,21 @@ const UpdateBook = () => {
             className="mb-2 w-full"
           />
           {selectedImageUrl && (
-            <img src={selectedImageUrl} alt="Cover Preview" className="w-32 h-32 object-cover mt-2" />
+            <img
+              src={selectedImageUrl}
+              alt="Cover Preview"
+              className="w-32 h-32 object-cover mt-2"
+            />
           )}
-          {imageFileName && <p className="text-sm text-gray-500">Selected: {imageFileName}</p>}
+          {imageFileName && (
+            <p className="text-sm text-gray-500">Selected: {imageFileName}</p>
+          )}
         </div>
 
-        <button type="submit" className="w-full py-2 bg-blue-500 text-white font-bold rounded-md mt-4">
+        <button
+          type="submit"
+          className="w-full py-2 bg-blue-500 text-white font-bold rounded-md mt-4"
+        >
           Update Book
         </button>
       </form>
