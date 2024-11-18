@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "./user.model.js";
 import dotenv from "dotenv";
+import bcrypt from "bcryptjs";  // Import bcrypt
 // Load environment variables
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -84,9 +85,11 @@ const  userLogin = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-    if (user.password !== password) {
-      return res.status(400).json({ message: "Incorrect password" });
-    }
+  //  Compare the plain text password with the hashed password in the database
+   const isMatch = await bcrypt.compare(password, user.password);
+   if (!isMatch) {
+     return res.status(400).json({ message: "Incorrect password" });
+   }
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       JWT_SECRET,
