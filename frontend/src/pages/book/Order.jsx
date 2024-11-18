@@ -47,7 +47,7 @@ function Order() {
                   </div>
                 ))}
               </div>
-              <p className="text-gray-600">
+              <p className="text-gray-600 mt-10">
                 Order Date: {new Date(order.createdAt).toLocaleDateString()}
               </p>
               <p className="text-gray-600">Total Amount: ₹{order.totalPrice}</p>
