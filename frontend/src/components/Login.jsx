@@ -2,42 +2,27 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import getBaseUrl from "../utils/baseUrl";
+import { useAuth } from "../context/AuthContext";
+
 
 const Login = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { loginUser, loading, error } = useAuth();  // Get loginUser function and loading/error from context
 
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      const response = await fetch(`${getBaseUrl()}/api/user/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        // Store the JWT token in localStorage or cookies
-        localStorage.setItem('token', result.token);
+      await loginUser(data.email, data.password);  // Using loginUser from context
+      if (!error) {
         setMessage("User Logged In Successfully");
         alert("User Logged In Successfully");
-        navigate("/"); // Redirect to home page after login
+        navigate("/"); 
+       
       } else {
-        setMessage(result.message || "Login failed");
+        setMessage(error || "Login failed");
       }
     } catch (error) {
       setMessage("Error logging in. Please try again.");
@@ -53,10 +38,7 @@ const Login = () => {
         {/* Login form */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="email"
-            >
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               Email
             </label>
             <input
@@ -71,10 +53,7 @@ const Login = () => {
           </div>
 
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
               Password
             </label>
             <input
@@ -88,13 +67,11 @@ const Login = () => {
             {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
           </div>
 
-          {message && (
-            <p className="text-red-500 text-xs italic mb-3">{message}</p>
-          )}
+          {message && <p className="text-red-500 text-xs italic mb-3">{message}</p>}
 
           <div>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded focus:outline-none">
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
         </form>

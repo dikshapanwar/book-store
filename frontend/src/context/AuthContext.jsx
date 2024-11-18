@@ -1,62 +1,79 @@
-import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebase/firebase";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import getBaseUrl from "../utils/baseUrl";
+
+// Auth API endpoints (adjust these to your actual backend)
+// const API_URL = "http://localhost:5000/api"; // replace with your backend URL
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
-// Initialize Google Provider
-const googleProvider = new GoogleAuthProvider();
-// Auth Provider
+
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  // Register a user
-  const registerUser = async (email, password) => {
-    return await createUserWithEmailAndPassword(auth, email, password);
-  };
-  // Login a user
-  const loginUser = async (email, password) => {
-    return await signInWithEmailAndPassword(auth, email, password);
-  };
+  const [loading, setLoading] = useState(true);
 
-  // Sign in with Google
-  const googleSignIn = async () => {
+  // Register a user
+  const registerUser = async (username,email, password) => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      setCurrentUser(result.user);
-      return result;
+      const response = await axios.post(`${getBaseUrl()}/api/user/register`, {
+        username,
+        email,
+        password,
+      });
+      return response.data; // Handle success response
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || "Registration failed");
       throw err;
     }
   };
-  // Logout
-  const logout = async () => {
-    await signOut(auth);
+
+  // Login a user
+  const loginUser = async (email, password) => {
+    try {
+      const response = await axios.post(`${getBaseUrl()}/api/user/login`, {
+        email,
+        password,
+      });
+      const { token } = response.data;
+
+      // Store JWT token in localStorage
+      localStorage.setItem("authToken", token);
+
+      // Decode the JWT token to get user details
+      const decodedToken = jwtDecode(token);
+      setCurrentUser(decodedToken);
+
+      return response.data; // Handle success response
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+      throw err;
+    }
   };
-  //manage user
+
+  // Logout
+  const logout = () => {
+    localStorage.removeItem("authToken");
+    setCurrentUser(null);
+  };
+
+  // Manage user state and auto-login from localStorage
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-      if (user) {
-        const { email, displayName, photoUrl } = user;
-        const userData = {
-          email,
-          userName: displayName,
-          photo: photoUrl,
-        };
+    const token = localStorage.getItem("authToken");
+
+    if (token) {
+      try {
+        // Decode token and set current user
+        const decodedToken = jwt_decode(token);
+        setCurrentUser(decodedToken);
+      } catch (err) {
+        setError("Invalid or expired token");
+        logout(); // Invalidate session if token is not valid
       }
-    });
-    return()=> unsubscribe();
+    }
+
+    setLoading(false);
   }, []);
 
   const value = {
@@ -65,7 +82,6 @@ export const AuthProvider = ({ children }) => {
     loading,
     registerUser,
     loginUser,
-    googleSignIn,
     logout,
   };
 

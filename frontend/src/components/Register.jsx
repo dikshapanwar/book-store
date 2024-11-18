@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaGoogle } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../context/AuthContext';
 import getBaseUrl from '../utils/baseUrl';
+import { useAuth } from '../context/AuthContext';
 
 function Register() {
   const [message, setMessage] = useState('');
-  const { registerUser, googleSignIn } = useAuth();
+  const { registerUser, loading, error } = useAuth();  // Get register function from context
   const navigate = useNavigate();
   
   const {
@@ -20,27 +20,13 @@ function Register() {
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      // Sending the registration data to the backend
-      const response = await fetch(`${getBaseUrl()}/api/user/register`, {  // Replace with your backend URL
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-          username: data.username,  // Assuming you also collect username
-        }),
-      });
-
-      const result = await response.json();
-       console.log(response)
-      if (response.ok) {
+      await registerUser(data.username, data.email, data.password);  // Using registerUser from context
+      if (!error) {
         setMessage('User Registered Successfully');
         alert('User Registered Successfully');
         navigate('/login');
       } else {
-        setMessage(result.message);
+        setMessage(error);  // Display error if occurs
       }
     } catch (error) {
       setMessage('Error: Unable to register user');
@@ -67,8 +53,8 @@ function Register() {
 
         {/* Attach handleSubmit to the form */}
         <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
               UserName
             </label>
             <input
@@ -78,7 +64,7 @@ function Register() {
               placeholder="User Name"
               className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow"
             />
-            {errors.email && <p className="text-red-500 text-xs">Email is required</p>}
+            {errors.username && <p className="text-red-500 text-xs">Username is required</p>}
           </div>
 
           <div className="mb-4">
@@ -112,7 +98,7 @@ function Register() {
           {message && <p className="text-red-500 text-xs italic mb-3">{message}</p>}
 
           <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded focus:outline-none">
-            Register
+            {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
 
