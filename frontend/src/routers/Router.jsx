@@ -18,6 +18,7 @@ import UpdateBook from "../pages/dashboard/editBooks/UpdateBook";
 import Wishlist from "../pages/book/Wishlist";
 import SearchResults from "../components/Search";
 import AddNews from "../pages/dashboard/addnews/AddNews";
+import ManageNews from "../pages/dashboard/manageNews/ManageNews";
 
 const router = createBrowserRouter([
   {
@@ -109,6 +110,10 @@ const router = createBrowserRouter([
       {
         path: "add-news",
         element: <AdminRoute><AddNews /></AdminRoute>
+      },
+      {
+        path: "manage-news",
+        element: <AdminRoute><ManageNews /></AdminRoute>
       },
     ]
   }
