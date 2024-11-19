@@ -29,24 +29,19 @@ const getOrderByEmail = async (req, res) => {
   }
 };
 
-// Get an order by its ID (newly added function)
-// const getOrder = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const order = await Order.findById(id).populate({
-//       path: "productIds",
-//       select: "title coverImage",
-//     });
+// Get all orders
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 }).populate({
+      path: "productIds",
+      select: "title coverImage",
+    });
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error in getAllOrders:", error);
+    res.status(500).json({ message: error.message });
+  }
+}
 
-//     if (!order) {
-//       return res.status(404).json({ message: "Order not found" });
-//     }
 
-//     res.status(200).json(order);
-//   } catch (error) {
-//     console.error("Error in getOrder:", error);
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-export { createOrder, getOrderByEmail };
+export { createOrder, getOrderByEmail,getAllOrders };

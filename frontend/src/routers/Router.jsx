@@ -20,6 +20,7 @@ import SearchResults from "../components/Search";
 import AddNews from "../pages/dashboard/addnews/AddNews";
 import ManageNews from "../pages/dashboard/manageNews/ManageNews";
 import SingleNews from "../pages/book/SingleNews";
+import AllOrder from "../pages/dashboard/orders/AllOrder";
 
 const router = createBrowserRouter([
   {
@@ -119,7 +120,10 @@ const router = createBrowserRouter([
       {
         path: "manage-news",
         element: <AdminRoute><ManageNews /></AdminRoute>
-      },
+      },{
+        path: "all-orders",
+        element: <AllOrder/>
+      }
     ]
   }
 ]);
