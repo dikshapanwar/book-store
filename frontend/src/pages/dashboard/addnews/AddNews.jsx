@@ -1,92 +1,119 @@
-import React, { useState } from 'react'
-import InputField from '../addbooks/InputField'
-import SelectField from '../addbooks/SelectField'
-import { useForm } from 'react-hook-form';
-import { useAddNewsMutation } from '../../../redux/news/newsApi';
-import Swal from 'sweetalert2';
+import React, { useState, useRef } from "react";
+import InputField from "../addbooks/InputField";
+import { useForm } from "react-hook-form";
+import { useAddNewsMutation } from "../../../redux/news/newsApi";
+import Swal from "sweetalert2";
+import { Editor } from "@tinymce/tinymce-react";
+import RTE from "./eDITOR.JSX";
 
 function AddNews() {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const [imageFile, setimageFile] = useState(null);
-    const [AddNews, {isLoading, isError}] = useAddNewsMutation()
-    const [imageFileName, setimageFileName] = useState('')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    control, // Include control
+  } = useForm();
 
-    const onSubmit = async(data) => {
-        console.log(data)
-        const newNewsData = {
-            ...data,
-            image: imageFileName
-        }
-        try {
-            await AddNews(newNewsData).unwrap();
-            Swal.fire({
-                title: "Book added",
-                text: "Your book is uploaded successfully!",
-                icon: "success",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, It's Okay!"
-              });
-              reset();
-              setimageFileName('')
-              setimageFile(null);
-        } catch (error) {
-            console.error(error);
-            alert("Failed to add book. Please try again.")   
-        }
+  const [imageFile, setImageFile] = useState(null);
+  const [AddNews, { isLoading }] = useAddNewsMutation();
+  const [imageFileName, setImageFileName] = useState("");
+  const [tags, setTags] = useState("");
+
+  const onSubmit = async (data) => {
+    const newNewsData = {
+      ...data,
+      image: imageFileName,
+      tags: tags.split(",").map((tag) => tag.trim()),
+    };
+
+    try {
+      await AddNews(newNewsData).unwrap();
+      Swal.fire({
+        title: "News added",
+        text: "Your news article is uploaded successfully!",
+        icon: "success",
+      });
+      reset();
+      setImageFileName("");
+      setImageFile(null);
+      setTags("");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to add news. Please try again.");
     }
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if(file) {
-            setimageFile(file);
-            setimageFileName(file.name);
-        }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setImageFile(file);
+      setImageFileName(file.name);
+    } else {
+      alert("Please select a valid image file.");
     }
+  };
+
   return (
     <div>
-           <div className="max-w-lg   mx-auto md:p-6 p-3 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Add NEWS</h2>
+      <div className="w-full mx-auto md:p-6 p-3 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Add NEWS</h2>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <InputField
+            label="Title"
+            name="title"
+            placeholder="Enter News title"
+            register={register}
+          />
 
-      {/* Form starts here */}
-      <form onSubmit={handleSubmit(onSubmit)} className=''>
-        {/* Reusable Input Field for Title */}
-        <InputField
-          label="Title"
-          name="title"
-          placeholder="Enter book title"
-          register={register}
-        />
+          {/* Pass control to RTE */}
+          <RTE
+            label="Content:"
+            name="content"
+            control={control}
+            defaultValue=""
+            errors={errors}
+          />
 
-        {/* Reusable Textarea for Description */}
-        <InputField
-          label="Description"
-          name="description"
-          placeholder="Enter book description"
-          type="textarea"
-          register={register}
+          <div className="mb-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Tags
+            </label>
+            <input
+              type="text"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              className="mb-2 w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Enter tags separated by commas"
+            />
+          </div>
 
-        />
+          <div className="mb-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Cover Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mb-2 w-full"
+            />
+            {imageFileName && (
+              <p className="text-sm text-gray-500">Selected: {imageFileName}</p>
+            )}
+          </div>
 
-
-
-        {/* Cover Image Upload */}
-        <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image</label>
-          <input type="file" accept="image/*" onChange={handleFileChange} className="mb-2 w-full" />
-          {imageFileName && <p className="text-sm text-gray-500">Selected: {imageFileName}</p>}
-        </div>
-
-        {/* Submit Button */}
-        <button type="submit" className="w-full py-2 bg-green-500 text-white font-bold rounded-md">
-         {
-            isLoading ? <span className="">Adding.. </span> : <span>Add News</span>
-          }
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="w-70 py-4 px-4 bg-green-500 text-white font-bold rounded-md"
+          >
+            {isLoading ? <span>Adding...</span> : <span>Add News</span>}
+          </button>
+        </form>
+      </div>
     </div>
-    </div>
-  )
+  );
 }
 
-export default AddNews
+
+export default AddNews;
