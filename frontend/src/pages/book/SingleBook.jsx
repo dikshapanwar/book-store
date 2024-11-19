@@ -15,8 +15,7 @@ const SingleBook = () => {
     dispatch(addItem(product));
   };
 
-  if (isLoading)
-    return <div className="text-center text-xl">Loading...</div>;
+  if (isLoading) return <div className="text-center text-xl">Loading...</div>;
 
   // Render error state
   if (isError || !book?.data) {
@@ -31,33 +30,30 @@ const SingleBook = () => {
 
   return (
     <div className="max-w-screen-lg mx-auto p-8">
-      {/* Book Title and Metadata */}
-      <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">{bookData.title}</h1>
-        <p className="text-lg text-gray-600 mb-4">{bookData.author}</p>
-        <div className="text-gray-500 text-sm space-x-4">
-          <span><strong>Category:</strong> {bookData.category}</span>
-          <span>
-            <strong>Published:</strong>{" "}
-            {new Date(bookData.createdAt).toLocaleDateString()}
-          </span>
-        </div>
-      </header>
-
       {/* Main Content Section */}
-      <div className="flex flex-col md:flex-row md:gap-12 items-stretch">
-        {/* Image Section */}
-        <div className="md:w-1/2 h-70 object-cover flex justify-center items-center mb-8 md:mb-0">
+      <div className="flex flex-col md:flex-row-reverse items-center justify-between gap-12">
+        {/* Image Section (Top on small screens, Right on large screens) */}
+        <div className="w-full md:w-1/2 flex justify-center mb-6 md:mb-0">
           <img
             src={getImgUrl(bookData.coverImage)}
             alt={bookData.title}
-            className="w-full h-full object-cover rounded-lg shadow-lg transition-transform transform hover:scale-105"
+            className="w-full h-96 md:h-[400px] lg:h-[500px] max-w-full object-cover rounded-lg shadow-lg transition-transform transform hover:scale-105"
           />
         </div>
 
-        {/* Description and Price Section */}
-        <div className="md:w-1/2 flex flex-col justify-between text-gray-800">
-          <p className="mb-6 text-lg">{bookData.description}</p>
+        {/* Content Section (Left on large screens, Bottom on small screens) */}
+        <div className="w-full md:w-1/2 text-gray-800">
+          {/* Title */}
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+            {bookData.title}
+          </h1>
+
+          {/* Description */}
+          <p className="text-lg mb-6">{bookData.description}</p>
+          <div className="text-lg mb-6">
+            <span className="font-semibold">Category:</span>{" "}
+            <span>{bookData.category}</span>
+          </div>
 
           {/* Price Section */}
           <div className="flex items-center gap-6 mb-6">
@@ -65,7 +61,9 @@ const SingleBook = () => {
               ${bookData.newPrice}
             </p>
             {bookData.oldPrice && (
-              <p className="text-sm text-gray-600 line-through">${bookData.oldPrice}</p>
+              <p className="text-sm text-gray-600 line-through">
+                ${bookData.oldPrice}
+              </p>
             )}
           </div>
 
