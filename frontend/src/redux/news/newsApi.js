@@ -3,7 +3,7 @@ import getBaseUrl from "../../utils/baseUrl";
 
 // Define the base query with proper configuration
 const baseQuery = fetchBaseQuery({
-    baseUrl: `${getBaseUrl()}/api/news`,
+  baseUrl: `${getBaseUrl()}/api/news`,
   credentials: "include",
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("token");
@@ -28,7 +28,7 @@ const newsApi = createApi({
 
     // Fetch book by ID
     fetchNewsByID: builder.query({
-      query: (id) => `/get-one/${id}`,
+      query: (id) => `/${id}`,
       providesTags: (result, error, id) => [{ type: "News", id }],
     }),
 
@@ -68,11 +68,11 @@ const newsApi = createApi({
 
 // Exporting the hooks for the defined endpoints
 export const {
-useFetchAllNewsQuery,
-useFetchNewsByIDQuery,
-useAddNewsMutation,
-useUpdateNewsMutation,
-useDeleteNewsMutation,
+  useFetchAllNewsQuery,
+  useFetchNewsByIDQuery,
+  useAddNewsMutation,
+  useUpdateNewsMutation,
+  useDeleteNewsMutation,
 } = newsApi;
 
 export default newsApi;

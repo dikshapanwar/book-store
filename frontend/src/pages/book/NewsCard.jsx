@@ -9,7 +9,7 @@ function NewsCard({ news }) {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 shadow-md">
             {/* Content */}
             <div className="py-4">
-                <Link to={`/news/${news.id}`}>
+                <Link to={`/news/${news._id}`}>
                     <h3 className="text-lg font-medium hover:text-blue-800 mb-4">{news.title}</h3>
                     <span>{news.createdAt}</span>
                 </Link>

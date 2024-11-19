@@ -13,17 +13,12 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 function Top() {
   const [selectedCategory, setSelectedCategory] = useState("Choose a genre");
   const { data: books = [], isLoading, error } = useFetchAllBooksQuery();
-
-  // Redux state for favorites
   const favorites = useSelector((state) => state.fav.favorites);
   const dispatch = useDispatch();
-
-  // Function to check if a book is already in the wishlist
   const isBookInWishlist = (bookId) => {
     return favorites.some((book) => book._id === bookId);
   };
 
-  // Function to handle adding/removing from wishlist
   const handleWishlistToggle = (book) => {
     if (isBookInWishlist(book._id)) {
       dispatch(removeFavorite(book._id));

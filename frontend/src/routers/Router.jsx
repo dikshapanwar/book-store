@@ -19,6 +19,7 @@ import Wishlist from "../pages/book/Wishlist";
 import SearchResults from "../components/Search";
 import AddNews from "../pages/dashboard/addnews/AddNews";
 import ManageNews from "../pages/dashboard/manageNews/ManageNews";
+import SingleNews from "../pages/book/SingleNews";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: "/books/:id",
         element: <SingleBook />
+      },
+      {
+        path: "/news/:id",
+        element: <SingleNews />
       }
     ]
   },
