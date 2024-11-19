@@ -5,9 +5,10 @@ import { useForm } from 'react-hook-form';
 
 import Swal from 'sweetalert2';
 import { useAddBookMutation } from '../../../redux/books/bookApi';
+import RTE from '../addnews/Editor';
 
 const AddBook = () => {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const { register, handleSubmit, formState: { errors },control, reset } = useForm();
     const [imageFile, setimageFile] = useState(null);
     const [addBook, {isLoading, isError}] = useAddBookMutation()
     const [imageFileName, setimageFileName] = useState('')
@@ -59,7 +60,7 @@ const AddBook = () => {
           register={register}
         />
 
-        {/* Reusable Textarea for Description */}
+        {/* Reusable Textarea for Description
         <InputField
           label="Description"
           name="description"
@@ -67,12 +68,22 @@ const AddBook = () => {
           type="textarea"
           register={register}
 
-        />
+        /> */}
+        
+          {/* Pass control to RTE */}
+          <RTE
+            label="Content:"
+            name="description"
+            control={control}
+            defaultValue=""
+            errors={errors}
+          />
 
         {/* Reusable Select Field for Category */}
         <SelectField
           label="Category"
           name="category"
+         
           options={[
             { value: '', label: 'Choose A Category' },
             { value: 'business', label: 'Business' },
