@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetAllOrdersQuery } from "../../../redux/orders/orderApi";
-
+import { FaEye } from "react-icons/fa";
 function AllOrder() {
   const navigate = useNavigate();
   const { data: orders, isLoading, isError } = useGetAllOrdersQuery();
@@ -88,7 +88,7 @@ function AllOrder() {
                     onClick={() => navigate(`/dashboard/order/${order._id}`)}
                     className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600 transition duration-200"
                   >
-                    View Details
+                    <FaEye />
                   </button>
                 </td>
               </tr>
