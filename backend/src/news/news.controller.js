@@ -2,7 +2,7 @@ import News from "./news.model.js";
 
 const createNews=async (req, res) => {
     try {
-        const { title, description, image } = req.body;
+        const { title, description, image,tag } = req.body;
         const news = new News( req.body);
         await news.save();
         console.log(news)

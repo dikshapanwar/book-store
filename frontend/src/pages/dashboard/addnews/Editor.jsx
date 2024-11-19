@@ -10,7 +10,7 @@ export default function RTE({ name, control, label, defaultValue = "", errors })
       {label && <label className="inline-block mb-1 pl-1">{label}</label>}
 
       <Controller
-        name={name || "content"}
+        name={name || "description"}
         control={control}
         defaultValue={defaultValue}
         render={({ field: { onChange, value } }) => (

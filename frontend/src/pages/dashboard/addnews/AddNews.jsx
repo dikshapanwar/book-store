@@ -69,7 +69,7 @@ function AddNews() {
           {/* Pass control to RTE */}
           <RTE
             label="Content:"
-            name="content"
+            name="description"
             control={control}
             defaultValue=""
             errors={errors}
