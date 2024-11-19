@@ -36,8 +36,14 @@ const ordersApi = createApi({
       }),
       providesTags: ["Orders"]
 }),
+
+    // Get one order
+    fetchOrderByID: builder.query({
+      query: (id) => `/${id}`,
+      providesTags: (result, error, id) => [{ type: "Orders", id }],
+    }),
   }),
 });
- export const { useCreateOrderMutation,useGetOrderByEmailQuery,useGetAllOrdersQuery} = ordersApi;
+ export const { useCreateOrderMutation,useGetOrderByEmailQuery,useGetAllOrdersQuery,useFetchOrderByIDQuery} = ordersApi;
 
 export default ordersApi;

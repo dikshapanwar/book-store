@@ -46,17 +46,23 @@ const getAllOrders = async (req, res) => {
 const getOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    const order = await Order.findById(id);
+    const order = await Order.findById(id).populate(
+      "productIds", // Populate product details
+      "title coverImage newPrice" // Select specific fields from the product
+    ) // Populate product details
+
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-    console.log(order)
-    res.status(200).json(order);
+
+    // Return the order data as needed
+    return res.status(200).json(order);
   } catch (error) {
     console.error("Error in getOrder:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 export { createOrder, getOrderByEmail,getAllOrders, getOrder };
