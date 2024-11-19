@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useGetAllOrdersQuery } from '../../../redux/orders/orderApi';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useGetAllOrdersQuery } from "../../../redux/orders/orderApi";
 
 function AllOrder() {
   const navigate = useNavigate();
@@ -13,7 +13,11 @@ function AllOrder() {
   }
 
   if (isError) {
-    return <p className="text-center text-red-500 mt-4">Failed to load orders. Please try again later.</p>;
+    return (
+      <p className="text-center text-red-500 mt-4">
+        Failed to load orders. Please try again later.
+      </p>
+    );
   }
 
   // Pagination logic
@@ -38,11 +42,11 @@ function AllOrder() {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-2xl font-semibold text-gray-700 mb-6">Orders</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 mb-6">Orders</h2>
       <div className="overflow-x-auto">
         <table className="table-auto w-full border border-gray-300 rounded-lg shadow-sm">
           <thead>
-            <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+            <tr className="bg-gray-100 text-gray-900 uppercase text-sm leading-normal">
               <th className="py-3 px-6 text-left">Order ID</th>
               <th className="py-3 px-6 text-left">Customer Name</th>
               <th className="py-3 px-6 text-left">Customer Email</th>
@@ -53,7 +57,7 @@ function AllOrder() {
               {/* <th className="py-3 px-6 text-center">Actions</th> */}
             </tr>
           </thead>
-          <tbody className="text-gray-600 text-sm font-light">
+          <tbody className="text-gray-900 text-sm font-light">
             {currentOrders?.map((order) => (
               <tr
                 key={order._id}
@@ -73,18 +77,20 @@ function AllOrder() {
                     </div>
                   ))}
                 </td>
-                <td className="py-3 px-6">{`$${order.totalPrice.toFixed(2)}`}</td>
+                <td className="py-3 px-6">{`$${order.totalPrice.toFixed(
+                  2
+                )}`}</td>
                 <td className="py-3 px-6">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </td>
-                {/* <td className="py-3 px-6 text-center">
+                <td className="py-3 px-6 text-center">
                   <button
                     onClick={() => navigate(`/dashboard/order/${order._id}`)}
                     className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600 transition duration-200"
                   >
                     View Details
                   </button>
-                </td> */}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -98,8 +104,8 @@ function AllOrder() {
           disabled={currentPage === 1}
           className={`py-2 px-4 rounded ${
             currentPage === 1
-              ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-600'
+              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
           Previous
@@ -111,8 +117,8 @@ function AllOrder() {
               onClick={() => handlePageClick(index + 1)}
               className={`py-2 px-4 rounded ${
                 currentPage === index + 1
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-600 hover:bg-blue-500 hover:text-white'
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-600 hover:bg-blue-500 hover:text-white"
               }`}
             >
               {index + 1}
@@ -124,8 +130,8 @@ function AllOrder() {
           disabled={currentPage === totalPages}
           className={`py-2 px-4 rounded ${
             currentPage === totalPages
-              ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-600'
+              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
           Next

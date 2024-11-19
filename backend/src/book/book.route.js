@@ -2,6 +2,7 @@ import express from "express";
 import {
     deleteABook,
   getAllBooks,
+  getBooksBySearch,
   getSingleBook,
   postABook,
   updateABook,
@@ -19,4 +20,6 @@ router.get("/:id", getSingleBook);
 router.put("/edit/:id",verifyToken, updateABook);
 //DELETE A BOOK
 router.delete("/delete/:id",verifyToken, deleteABook);
+//SEARCH BOOKS
+router.get("/search", getBooksBySearch);
 export default router;

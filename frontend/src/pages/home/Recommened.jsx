@@ -6,11 +6,12 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css/navigation";
 import Card from '../book/Card';
 import { useFetchAllBooksQuery } from "../../redux/books/bookApi";
+import { useAuth } from "../../context/AuthContext";
 
 function Recommened() {
    // Fetching books data using Redux Toolkit Query
    const { data: books = [] } = useFetchAllBooksQuery();
-
+   const { currentUser } = useAuth();
   return (
     <div className="py-16">
       <h2 className="text-3xl font-semibold mb-6">Recommened For You</h2>

@@ -7,6 +7,8 @@ import avatarImage from "../assets/avatar.png";
 import { useSelector } from "react-redux";
 import { useAuth } from "../context/AuthContext";
 import { FaShoppingCart } from "react-icons/fa";
+import getBaseUrl from "../utils/baseUrl";
+import axios from "axios";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard" },
@@ -17,21 +19,34 @@ const navigation = [
 
 function Navbar() {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // Search Query State
   const cartItem = useSelector((state) => state.cart.cartItem);
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
+ // Inside Navbar component (React)
+
+const handleSearch = async (e) => {
+  e.preventDefault(); // Prevent form submission
+  if (searchQuery.trim()) {
+    try {
+      const response = await axios.get(`${getBaseUrl}/search?query=${searchQuery}`);
+      const data = await response.json();
+      if (response.ok) {
+        navigate(`/search?query=${searchQuery}`, { state: { books: data } });
+      } else {
+        alert('No books found');
+      }
+    } catch (error) {
+      console.error('Error during search:', error);
+      alert('Error fetching search results');
+    }
+  }
+};
+
   const handleLogOut = () => {
     logout();
     setIsDropDownOpen(false);
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim() !== "") {
-      navigate(`/search?query=${searchQuery}`);
-    }
   };
 
   return (
@@ -44,13 +59,13 @@ function Navbar() {
           </Link>
 
           {/* Search Input */}
-          <form onSubmit={handleSearch} className="relative md:w-72 w-40 sm:w-32">
+          <form className="relative md:w-72 w-40 sm:w-32" onSubmit={handleSearch}>
             <CiSearch className="absolute left-1 inset-y-2 w-5 h-5" />
             <input
               type="text"
+              placeholder="Search for books..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search here"
+              onChange={(e) => setSearchQuery(e.target.value)} // Update search query as user types
               className="bg-[#EAEAEA] w-full py-1 md:px-8 px-6 rounded-md focus:outline-none"
             />
           </form>
@@ -75,44 +90,40 @@ function Navbar() {
               </button>
 
               {/* Dropdown Menu */}
-         
-             {isDropDownOpen && (
-                  <div className="absolute right-0 mt-80 bg-white shadow-lg rounded-md p-2 w-40 z-40 ">
-                    <ul className="space-y-2">
-                      {navigation.map((item) => (
-                        //  console.log(item),
-                        <li
-                          key={item.name}
+              {isDropDownOpen && (
+                <div className="absolute right-0 mt-80 bg-white shadow-lg rounded-md p-2 w-40 z-40 ">
+                  <ul className="space-y-2">
+                    {navigation.map((item) => (
+                      <li
+                        key={item.name}
+                        onClick={() => setIsDropDownOpen(false)}
+                      >
+                        <Link
+                          to={item.href}
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
                           onClick={() => setIsDropDownOpen(false)}
                         >
-                          <Link
-                            to={item.href}
-                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                            onClick={() => setIsDropDownOpen(false)}
-                          >
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
-                      <li>
-                        <button
-                          onClick={() => handleLogOut()}
-                          className="block px-4 py-2 text-gray-700
-                         hover:bg-gray-100 rounded-md"
-                        >
-                          Logout
-                        </button>
+                          {item.name}
+                        </Link>
                       </li>
-                    </ul>
-                  </div>
-                )}
-              </>
-            ) : (
-              <Link to="/login">
-                <CiUser className="w-6 h-6" />
-              </Link>
-            )}
-      
+                    ))}
+                    <li>
+                      <button
+                        onClick={() => handleLogOut()}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </>
+          ) : (
+            <Link to="/login">
+              <CiUser className="w-6 h-6" />
+            </Link>
+          )}
 
           {/* Wishlist Link */}
           <Link to="/wishlist">
@@ -130,8 +141,8 @@ function Navbar() {
               </span>
             ) : (
               <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
-             0
-            </span>
+                0
+              </span>
             )}
           </Link>
         </div>
@@ -139,4 +150,5 @@ function Navbar() {
     </header>
   );
 }
+
 export default Navbar;

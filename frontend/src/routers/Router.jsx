@@ -16,11 +16,12 @@ import ManageBooks from "../pages/dashboard/manageBooks/ManageBooks";
 import AddBooks from "../pages/dashboard/addbooks/AddBooks";
 import UpdateBook from "../pages/dashboard/editBooks/UpdateBook";
 import Wishlist from "../pages/book/Wishlist";
-import SearchResults from "../components/Search";
+//import SearchResults from "../components/Search";
 import AddNews from "../pages/dashboard/addnews/AddNews";
 import ManageNews from "../pages/dashboard/manageNews/ManageNews";
 import SingleNews from "../pages/book/SingleNews";
 import AllOrder from "../pages/dashboard/orders/AllOrder";
+import View from "../pages/dashboard/orders/View";
 
 const router = createBrowserRouter([
   {
@@ -31,10 +32,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />
       },
-      {
-        path: "/search",
-        element: <SearchResults />
-      },
+      // {
+      //   path: "/search",
+      //   element: <SearchResults />
+      // },
       {
         path: "/orders",
         element: (
@@ -122,7 +123,11 @@ const router = createBrowserRouter([
         element: <AdminRoute><ManageNews /></AdminRoute>
       },{
         path: "all-orders",
-        element: <AllOrder/>
+        element: <AdminRoute><AllOrder/></AdminRoute>
+      },
+      {
+        path: "order/:id",
+        element: <AdminRoute><View/></AdminRoute>
       }
     ]
   }
