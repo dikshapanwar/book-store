@@ -21,7 +21,7 @@ const Footer = () => {
         </div>
 
         {/* Right Side - Newsletter */}
-        <div className="md:w-1/2 w-full">
+        <div className="md:w-1/2 w-full" id='subscribe'>
           <p className="mb-4">
             Subscribe to our newsletter to receive the latest updates, news, and offers!
           </p>
