@@ -8,12 +8,10 @@ router.post("/add", async (req, res) => {
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
-  
     try {
       // Save the email to the database
       const subscriber = new Newsletter({ email });
       await subscriber.save();
-  
       res.status(200).json({ message: "Subscription successful!" });
     } catch (err) {
       if (err.code === 11000) {
