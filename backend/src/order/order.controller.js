@@ -12,9 +12,10 @@ const createOrder = async (req, res) => {
 };
 
 // Get orders by email
+// Backend route to handle getting orders by email
 const getOrderByEmail = async (req, res) => {
+  const { email } = req.params;  // Route parameter instead of query
   try {
-    const { email } = req.params;
     const orders = await Order.find({ email }).sort({ createdAt: -1 }).populate({
       path: "productIds",
       select: "title coverImage",

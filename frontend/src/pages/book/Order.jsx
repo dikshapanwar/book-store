@@ -5,6 +5,17 @@ import { getImgUrl } from "../../utils/getImageUrl";
 
 function Order() {
   const { currentUser } = useAuth();
+
+  // Check if `currentUser` or `currentUser.email` is missing
+  if (!currentUser || !currentUser.email) {
+    return (
+      <div className="container mx-auto p-6 text-center">
+        <h2 className="text-2xl font-semibold mb-4">Your Orders</h2>
+        <p>Please log in to view your orders.</p>
+      </div>
+    );
+  }
+
   const {
     data: orders = [],
     isLoading,
@@ -14,14 +25,21 @@ function Order() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+
+  // if (error) {
+  //   // Handle specific error cases if needed
+  //   return (
+  //     <div className="container mx-auto p-6 text-center text-red-500">
+  //       <h2 className="text-2xl font-semibold mb-4">Error</h2>
+  //       <p>Failed to fetch orders. Please try again later.</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-semibold mb-4">Your Orders</h2>
-      {orders && orders.length > 0 ? (
+      {orders.length > 0 ? (
         <div>
           {orders.map((order, index) => (
             <div key={order._id} className="border p-4 mb-4">
@@ -56,7 +74,8 @@ function Order() {
         </div>
       ) : (
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4">No orders found.</h2>
+          <h2 className="text-2xl font-semibold mb-4">No Orders Found</h2>
+          <p>You haven't placed any orders yet.</p>
         </div>
       )}
     </div>
