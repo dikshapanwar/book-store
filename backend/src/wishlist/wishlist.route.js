@@ -7,13 +7,11 @@ router.post("/wishlist", async (req, res) => {
   const { user_id, product_id } = req.body;
 
   try {
-    // Check if the user exists
-    const user = await User.findById(user_id); // Use User.findById to find the user
+
+    const user = await User.findById(user_id);
     if (!user) {
       return res.status(404).send("User not found");
     }
-
-    // Check if the product is already in the wishlist
     const existingItem = await Wishlist.findOne({ user_id, product_id });
     if (existingItem) {
       return res.status(400).send("Product already in the wishlist");

@@ -39,7 +39,6 @@ function Navbar() {
       alert("An error occurred while searching. Please try again.");
     }
   };
-  
 
   const handleLogOut = () => {
     console.log("Logging out user");
@@ -57,7 +56,10 @@ function Navbar() {
           </Link>
 
           {/* Search Input */}
-          <form className="relative md:w-72 w-40 sm:w-32" onSubmit={handleSearch}>
+          <form
+            className="relative md:w-72 w-40 sm:w-32"
+            onSubmit={handleSearch}
+          >
             <CiSearch className="absolute left-1 inset-y-2 w-5 h-5" />
             <input
               type="text"
@@ -76,7 +78,11 @@ function Navbar() {
           {currentUser ? (
             <>
               <button onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
-                <img src={avatarImage} alt="User Avatar" className="w-5 h-5 rounded-full" />
+                <img
+                  src={avatarImage}
+                  alt="User Avatar"
+                  className="w-5 h-5 rounded-full"
+                />
               </button>
 
               {/* Dropdown Menu */}
@@ -120,13 +126,12 @@ function Navbar() {
           </Link>
 
           {/* Cart Link */}
-          <Link to="/cart">
+          <Link to="/cart" className="relative">
             <FaShoppingCart className="w-5 h-5" />
-            {cartItem.length > 0 && (
-              <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full absolute -top-1 -right-1">
-                {cartItem.length}
-              </span>
-            )}
+            {/* Display the cart item count, showing 0 if the cart is empty */}
+            <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full absolute -top-2 -right-2 flex justify-center items-center text-xs">
+              {cartItem.length > 0 ? cartItem.length : 0}
+            </span>
           </Link>
         </div>
       </nav>
