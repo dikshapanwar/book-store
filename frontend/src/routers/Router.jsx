@@ -22,6 +22,7 @@ import ManageNews from "../pages/dashboard/manageNews/ManageNews";
 import SingleNews from "../pages/book/SingleNews";
 import AllOrder from "../pages/dashboard/orders/AllOrder";
 import View from "../pages/dashboard/orders/View";
+import SearchResults from "../components/Search";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />
+        element: <Home />,
       },
       // {
       //   path: "/search",
@@ -42,27 +43,31 @@ const router = createBrowserRouter([
           <PrivateRoutes>
             <Order />
           </PrivateRoutes>
-        )
+        ),
       },
       {
         path: "/about",
-        element: <h1>About</h1>
+        element: <h1>About</h1>,
+      },
+      {
+        path: "/search",
+        element: <SearchResults/>
       },
       {
         path: "/login",
-        element: <Login />
+        element: <Login />,
       },
       {
         path: "/register",
-        element: <Register />
+        element: <Register />,
       },
       {
         path: "/cart",
-        element: <Cart />
+        element: <Cart />,
       },
       {
         path: "/wishlist",
-        element: <Wishlist />
+        element: <Wishlist />,
       },
       {
         path: "/checkout",
@@ -70,21 +75,21 @@ const router = createBrowserRouter([
           <PrivateRoutes>
             <CheckOut />
           </PrivateRoutes>
-        )
+        ),
       },
       {
         path: "/books/:id",
-        element: <SingleBook />
+        element: <SingleBook />,
       },
       {
         path: "/news/:id",
-        element: <SingleNews />
-      }
-    ]
+        element: <SingleNews />,
+      },
+    ],
   },
   {
     path: "/admin",
-    element: <AdminLogin />
+    element: <AdminLogin />,
   },
   {
     path: "/dashboard",
@@ -96,41 +101,74 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <AdminRoute><Dashboard /></AdminRoute>
+        element: (
+          <AdminRoute>
+            <Dashboard />
+          </AdminRoute>
+        ),
       },
       {
         path: "add-book",
-        element: <AdminRoute><AddBooks /></AdminRoute>
+        element: (
+          <AdminRoute>
+            <AddBooks />
+          </AdminRoute>
+        ),
       },
       {
         path: "edit-book/:id",
-        element: <AdminRoute><UpdateBook /></AdminRoute>
+        element: (
+          <AdminRoute>
+            <UpdateBook />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-books",
-        element: <AdminRoute><ManageBooks /></AdminRoute>
+        element: (
+          <AdminRoute>
+            <ManageBooks />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-users",
-        element: <div>Manage Users</div>
+        element: <div>Manage Users</div>,
       },
       {
         path: "add-news",
-        element: <AdminRoute><AddNews /></AdminRoute>
+        element: (
+          <AdminRoute>
+            <AddNews />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-news",
-        element: <AdminRoute><ManageNews /></AdminRoute>
-      },{
+        element: (
+          <AdminRoute>
+            <ManageNews />
+          </AdminRoute>
+        ),
+      },
+      {
         path: "all-orders",
-        element: <AdminRoute><AllOrder/></AdminRoute>
+        element: (
+          <AdminRoute>
+            <AllOrder />
+          </AdminRoute>
+        ),
       },
       {
         path: "order/:id",
-        element: <AdminRoute><View/></AdminRoute>
-      }
-    ]
-  }
+        element: (
+          <AdminRoute>
+            <View />
+          </AdminRoute>
+        ),
+      },
+    ],
+  },
 ]);
 
 export default router;

@@ -94,29 +94,14 @@ const deleteABook = async (req, res) => {
 };
 
 //Search books
-const getBooksBySearch = async (req, res) => {
-  try {
-      const searchQuery = req.query.title?.trim(); // Use 'title' as query parameter
-      if (!searchQuery) {
-          return res.status(400).json({ message: "Search query cannot be empty" });
-      }
+const getBooksBySearch = (req, res) => {
+  const { title } = req.query;
 
-      // Search for books using text search or regex
-      const books = await Book.find({
-          title: { $regex: searchQuery, $options: 'i' },
-      });
-
-      // Return books or an empty array with a message
-      if (books.length === 0) {
-          return res.status(200).json({ message: "No books found", books: [] });
-      }
-
-      res.status(200).json(books);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server Error" });
-  }
+  Book.find({ title: { $regex: title, $options: 'i' } })
+    .then(books => res.json(books))
+    .catch(error => res.status(500).json({ message: error.message }));
 };
+
 
 
 export { postABook, getAllBooks, getSingleBook, updateABook, deleteABook,getBooksBySearch };

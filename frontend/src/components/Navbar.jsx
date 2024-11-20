@@ -3,12 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiMiniBars3BottomLeft } from "react-icons/hi2";
 import { CiSearch, CiUser } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa6";
-import avatarImage from "../assets/avatar.png";
+import { FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useAuth } from "../context/AuthContext";
-import { FaShoppingCart } from "react-icons/fa";
-import getBaseUrl from "../utils/baseUrl";
-import axios from "axios";
+import avatarImage from "../assets/avatar.png";
+import { useSearchBooksQuery } from "../redux/books/bookApi";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard" },
@@ -18,33 +17,32 @@ const navigation = [
 ];
 
 function Navbar() {
+  const [searchQuery, setSearchQuery] = useState(""); // Searching state
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // Search Query State
-  const cartItem = useSelector((state) => state.cart.cartItem);
+
   const { currentUser, logout } = useAuth();
+  const cartItem = useSelector((state) => state.cart.cartItem);
   const navigate = useNavigate();
 
- // Inside Navbar component (React)
-
-const handleSearch = async (e) => {
-  e.preventDefault(); // Prevent form submission
-  if (searchQuery.trim()) {
-    try {
-      const response = await axios.get(`${getBaseUrl}/search?query=${searchQuery}`);
-      const data = await response.json();
-      if (response.ok) {
-        navigate(`/search?query=${searchQuery}`, { state: { books: data } });
-      } else {
-        alert('No books found');
-      }
-    } catch (error) {
-      console.error('Error during search:', error);
-      alert('Error fetching search results');
+  const { data, isLoading, isError } = useSearchBooksQuery(searchQuery);
+  const handleSearch = async (e) => {
+    e.preventDefault(); // Prevent page reload on form submit
+    if (!searchQuery.trim()) {
+      alert("Please enter a search query.");
+      return;
     }
-  }
-};
+    navigate(`/search?title=${searchQuery}`);
+    try {
+      console.log("Searching for books with title:", searchQuery);
+    } catch (error) {
+      console.error("Error searching books:", error);
+      alert("An error occurred while searching. Please try again.");
+    }
+  };
+  
 
   const handleLogOut = () => {
+    console.log("Logging out user");
     logout();
     setIsDropDownOpen(false);
   };
@@ -65,7 +63,9 @@ const handleSearch = async (e) => {
               type="text"
               placeholder="Search for books..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)} // Update search query as user types
+              onChange={(e) => {
+                setSearchQuery(e.target.value); // Update search query
+              }}
               className="bg-[#EAEAEA] w-full py-1 md:px-8 px-6 rounded-md focus:outline-none"
             />
           </form>
@@ -75,29 +75,16 @@ const handleSearch = async (e) => {
         <div className="relative flex items-center gap-6">
           {currentUser ? (
             <>
-              {/* Avatar Button */}
-              <button
-                onClick={() => setIsDropDownOpen(!isDropDownOpen)}
-                className="focus:outline-none"
-              >
-                <img
-                  src={avatarImage}
-                  alt="User Avatar"
-                  className={`w-5 h-5 rounded-full ${
-                    currentUser ? "ring-2 ring-blue-900" : ""
-                  }`}
-                />
+              <button onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
+                <img src={avatarImage} alt="User Avatar" className="w-5 h-5 rounded-full" />
               </button>
 
               {/* Dropdown Menu */}
               {isDropDownOpen && (
-                <div className="absolute right-0 mt-80 bg-white shadow-lg rounded-md p-2 w-40 z-40 ">
+                <div className="absolute right-0 mt-10 bg-white shadow-lg rounded-md p-2 w-40 z-40">
                   <ul className="space-y-2">
                     {navigation.map((item) => (
-                      <li
-                        key={item.name}
-                        onClick={() => setIsDropDownOpen(false)}
-                      >
+                      <li key={item.name}>
                         <Link
                           to={item.href}
                           className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
@@ -109,7 +96,7 @@ const handleSearch = async (e) => {
                     ))}
                     <li>
                       <button
-                        onClick={() => handleLogOut()}
+                        onClick={handleLogOut}
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
                       >
                         Logout
@@ -127,21 +114,17 @@ const handleSearch = async (e) => {
 
           {/* Wishlist Link */}
           <Link to="/wishlist">
-            <button className="hidden sm:block">
+            <button>
               <FaHeart className="w-5 h-5 text-red-500 hover:text-red-700" />
             </button>
           </Link>
 
           {/* Cart Link */}
-          <Link to="/cart" className="p-1 sm:px-2 flex items-center rounded-full relative">
-            <FaShoppingCart />
-            {cartItem.length > 0 ? (
-              <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
+          <Link to="/cart">
+            <FaShoppingCart className="w-5 h-5" />
+            {cartItem.length > 0 && (
+              <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full absolute -top-1 -right-1">
                 {cartItem.length}
-              </span>
-            ) : (
-              <span className="bg-primary text-yellow-50 w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-1">
-                0
               </span>
             )}
           </Link>
