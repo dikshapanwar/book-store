@@ -94,26 +94,29 @@ const deleteABook = async (req, res) => {
 };
 
 //Search books
-const getBooksBySearch =async(req, res)=>{
+const getBooksBySearch = async (req, res) => {
   try {
-    const searchQuery = req.query.query || ''; // Query parameter
+      const searchQuery = req.query.title?.trim(); // Use 'title' as query parameter
+      if (!searchQuery) {
+          return res.status(400).json({ message: "Search query cannot be empty" });
+      }
 
-    // MongoDB search using regex for a case-insensitive search on the title or other fields
-    const books = await Book.find({
-      title: { $regex: searchQuery, $options: 'i' }, // 'i' makes the search case-insensitive
-    });
+      // Search for books using text search or regex
+      const books = await Book.find({
+          title: { $regex: searchQuery, $options: 'i' },
+      });
 
-    // If no books found
-    if (books.length === 0) {
-      return res.status(404).json({ message: "No books found" });
-    }
+      // Return books or an empty array with a message
+      if (books.length === 0) {
+          return res.status(200).json({ message: "No books found", books: [] });
+      }
 
-    // Return books matching the search query
-    return res.status(200).json(books);
+      res.status(200).json(books);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error" });
+      console.error(error);
+      res.status(500).json({ message: "Server Error" });
   }
-}
+};
+
 
 export { postABook, getAllBooks, getSingleBook, updateABook, deleteABook,getBooksBySearch };
