@@ -87,7 +87,7 @@ function Navbar() {
 
               {/* Dropdown Menu */}
               {isDropDownOpen && (
-                <div className="absolute right-0 mt-10 bg-white shadow-lg rounded-md p-2 w-40 z-40">
+                <div className="absolute right-0 mt-80 bg-white shadow-lg rounded-md p-2 w-40 z-40 ">
                   <ul className="space-y-2">
                     {navigation.map((item) => (
                       <li key={item.name}>

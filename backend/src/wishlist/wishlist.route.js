@@ -3,9 +3,8 @@ import Wishlist from "../wishlist/wishlist.model.js"; // Mongoose model for the 
 import User from "../users/user.model.js";
 
 const router = Router();
-router.post("/wishlist", async (req, res) => {
+router.post("/add-wishlist", async (req, res) => {
   const { user_id, product_id } = req.body;
-
   try {
 
     const user = await User.findById(user_id);

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFavorite, initializeFavorites } from '../../redux/books/Favroute';
+import { removeFavorite } from '../../redux/books/Favroute';
 import { getImgUrl } from '../../utils/getImageUrl';
 import axios from 'axios';
 import getBaseUrl from '../../utils/baseUrl';
@@ -10,25 +10,13 @@ function Wishlist() {
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
 
- 
-  const handleAddToWishlist = async (userId, productId) => {
-    try {
-      const response = await axios.post(`${getBaseUrl()}api/wishlist/wishlist`, { user_id: userId, product_id: productId });
-      console.log('Product added to wishlist:', response.data);
-      // Optionally, you can update the local state or notify the user
-    } catch (err) {
-      setError(err.response ? err.response.data : 'Server error');
-      console.error('Error adding product to wishlist:', err);
-    }
-  };
-
-  // Remove favorite from local storage and Redux store
+  
   const handleRemoveFavorite = (bookId) => {
     dispatch(removeFavorite(bookId)); // This will also update local storage
   };
 
   return (
-    <div className="wishlist-container">
+    <div className="wishlist-container py-10">
       <h2 className="text-2xl font-semibold mb-4">Your Wishlist</h2>
 
       {/* Display error message if there is any */}
@@ -50,13 +38,7 @@ function Wishlist() {
               <p className="text-gray-600">{book.description.slice(0, 100)}...</p>
               <p className="font-medium mt-2">${book.newPrice}</p>
 
-              {/* Add to wishlist button */}
-              <button
-                onClick={() => handleAddToWishlist('user-id-placeholder', book._id)} // Replace with actual user ID
-                className="text-blue-500 hover:text-blue-600 mt-2"
-              >
-                Add to Wishlist
-              </button>
+            
 
               {/* Remove from wishlist button */}
               <button

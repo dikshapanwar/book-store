@@ -7,23 +7,42 @@ import "swiper/css/navigation";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { useFetchAllBooksQuery } from "../../redux/books/bookApi";
 import { useSelector, useDispatch } from "react-redux";
-import { addFavorite, removeFavorite } from "../../redux/books/Favroute";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { useAddWishlistMutation, useRemoveWishlistMutation } from "../../redux/wishlist/WishlistApi";
 
 function Top() {
   const [selectedCategory, setSelectedCategory] = useState("Choose a genre");
   const { data: books = [], isLoading, error } = useFetchAllBooksQuery();
   const favorites = useSelector((state) => state.fav.favorites);
   const dispatch = useDispatch();
+  const userId = localStorage.getItem("user_id");
+  
+  // Add and remove wishlist mutations from wishlistApi
+  const [addWishlist] = useAddWishlistMutation();
+  const [removeWishlist] = useRemoveWishlistMutation();
+
   const isBookInWishlist = (bookId) => {
-    return favorites.some((book) => book._id === bookId);
+    return favorites.some((book) => book._id === bookId); // Check local state
   };
 
-  const handleWishlistToggle = (book) => {
+  const handleWishlistToggle = async (book) => {
+    if (!userId) {
+      alert("Please log in to add items to your wishlist.");
+      return;
+    }
     if (isBookInWishlist(book._id)) {
-      dispatch(removeFavorite(book._id));
+      try {
+        await removeWishlist({ user_id: userId, product_id: book._id });
+      } catch (error) {
+        console.error("Error removing book from wishlist:", error);
+      }
     } else {
-      dispatch(addFavorite(book));
+      try {
+        await addWishlist({ productId: book._id, user_id: userId });
+        console.log("Book added to wishlist:", book._id);
+      } catch (error) {
+        console.error("Error adding book to wishlist:", error);
+      }
     }
   };
 
@@ -100,7 +119,7 @@ function Top() {
 
                 {/* Heart icon for wishlist */}
                 <button
-                  onClick={() => handleWishlistToggle(book)}
+                  onClick={() => handleWishlistToggle(book)} // Toggle wishlist on heart icon click
                   className="absolute top-4 right-4 text-red-500 text-xl"
                 >
                   {isBookInWishlist(book._id) ? (
