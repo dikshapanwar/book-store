@@ -23,6 +23,7 @@ import SingleNews from "../pages/book/SingleNews";
 import AllOrder from "../pages/dashboard/orders/AllOrder";
 import View from "../pages/dashboard/orders/View";
 import SearchResults from "../components/Search";
+import Subscribe from "../pages/dashboard/Subscribe/Subscribe";
 
 const router = createBrowserRouter([
   {
@@ -167,6 +168,10 @@ const router = createBrowserRouter([
           </AdminRoute>
         ),
       },
+      {
+        path:"subscribers",
+        element:<AdminRoute><Subscribe/></AdminRoute>
+      }
     ],
   },
 ]);

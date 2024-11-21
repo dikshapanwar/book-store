@@ -10,17 +10,20 @@ function Banner() {
 
   // Handle email input change
   const handleInputChange = (e) => {
+    console.debug("Input changed:", e.target.value);
     setEmail(e.target.value);
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Show loading state
+    console.debug("Form submitted with email:", email);
+    setIsLoading(true);
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.warn("Invalid email format:", email);
       setMessage("Please enter a valid email address.");
       setIsLoading(false);
       return;
@@ -37,14 +40,16 @@ function Banner() {
       });
 
       const data = await response.json();
+      console.debug("Server response:", data);
 
       if (response.ok) {
         setMessage("Thank you for subscribing!");
-        setEmail(""); // Clear the email input on success
+        setEmail("");
       } else {
         setMessage(data.message || "Something went wrong, please try again.");
       }
     } catch (error) {
+      console.error("Error connecting to the server:", error);
       setMessage("Error connecting to the server. Please try again.");
     }
 
@@ -65,19 +70,18 @@ function Banner() {
           New Releases This Week
         </h1>
         <p className="mb-10">
-          "I want a better catastrophe" can be seen as an intriguing paradox,
-          reflecting the desire for something less destructive amid chaos.
-          Here's some text exploring this concept: I want a better catastrophe.
+          "I want a better catastrophe" reflects the desire for something less
+          destructive amid chaos. Stay informed by subscribing below!
         </p>
         <div className="flex flex-col items-center mt-8">
-          {!message.includes("Thank you") ? ( // Show form if no success message
+          {!message.includes("Thank you") ? (
             <form
               id="newsletter-form"
               onSubmit={handleSubmit}
               className="flex flex-col md:flex-row items-center w-full sm:w-34"
             >
               <label htmlFor="email" className="sr-only">
-                Enter your email
+                Enter your email address to subscribe
               </label>
               <input
                 type="email"
@@ -87,9 +91,9 @@ function Banner() {
                 value={email}
                 onChange={handleInputChange}
                 required
-                aria-label="Email Address"
+                aria-label="Enter your email address to subscribe to the newsletter"
                 className="bg-white border border-gray-300 rounded-md shadow-sm py-3 px-4 w-full
-                 md:flex-grow focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
+                  md:flex-grow focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
               />
               <button
                 type="submit"
@@ -100,11 +104,9 @@ function Banner() {
               </button>
             </form>
           ) : (
-            <p className="text-center text-gray-500 text-sm mt-4">
-              {message}
-            </p>
+            <p className="text-center text-gray-500 text-sm mt-4">{message}</p>
           )}
-          {!message.includes("Thank you") && ( // Show this only when the form is visible
+          {!message.includes("Thank you") && (
             <p className="text-gray-500 text-sm mt-4">
               Stay updated with our latest news and offers. No spam, we promise!
             </p>
